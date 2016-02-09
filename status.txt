@@ -6,3 +6,7 @@ Changes not staged for commit:
 	modified:   status.txt
 
 нет изменений, добавленных в коммит (используйте "git add" и/или "git commit -a")
+В ветке master
+Your branch is up-to-date with 'origin/master'.
+
+нечего фиксировать, рабочая директория пуста
