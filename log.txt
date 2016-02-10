@@ -1,0 +1,17 @@
+commit 05aac85e1e36a36b8b1bf1771e095a0924891a9a
+Author: YakushevSV <yakushevsv2016@mail.ru>
+Date:   Tue Feb 9 21:03:21 2016 +0300
+
+    status after cloning
+
+commit e756a63a4273a49e9f2a730d54c78a9d82ccd352
+Author: YakushevSV <yakushevsv2016@mail.ru>
+Date:   Tue Feb 9 12:32:32 2016 +0300
+
+    first commit status.txt
+
+commit 162b8c9b4a7e186328699bddfaea6116cdb8be2d
+Author: YakushevSV <yakushevsv2016@mail.ru>
+Date:   Tue Feb 9 12:22:44 2016 +0300
+
+    Add .gitignore
