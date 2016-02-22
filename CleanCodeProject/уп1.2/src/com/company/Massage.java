@@ -1,17 +1,14 @@
 package com.company;
 
-/**
- * Created by lenovo on 11.02.16.
- */
 public class Massage {
     private String id;
     private String author;
     private long timestamp;
     private String message;
     public Massage(String i, String m, String a, long t){
-        id = new String(i);
-        message = new String(m);
-        author = new String(a);
+        id =i;
+        message = m;
+        author = a;
         timestamp = t;
     }
 

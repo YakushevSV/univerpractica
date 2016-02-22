@@ -9,10 +9,6 @@ import java.util.regex.Pattern;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
-/**
- * Created by lenovo on 10.02.16.
- */
 public class Chat {
     ArrayList<Massage> messages;
     public Chat(String filename) throws FileNotFoundException {
@@ -38,8 +34,7 @@ public class Chat {
         UUID uuid = UUID.randomUUID();
         long curTime = System.currentTimeMillis();
         Massage m = new Massage(uuid.toString(), mes, aut, curTime);
-        if (messages.add(m)) return true;
-        else return false;
+        return messages.add(m);
     }
     public boolean deleteMessage(String id){
         boolean f1 = false;
@@ -94,28 +89,19 @@ public class Chat {
         }
         return c;
     }
-    public void periodShow(String s1, String s2){
+    public void periodShow(String s1, String s2) throws ParseException{
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
         Date d1;
         Date d2;
-        try {
-            d1= sdf.parse(s1);
-            d2 = sdf.parse(s2);
-            long l1 = d1.getTime();
-            long l2 = d2.getTime();
-            for(Massage m: messages){
-                if (l1<=m.getTimestamp()&&l2>=m.getTimestamp()){
-                    System.out.println(m.getAuthor() + " -> \"" + m.getMessage() + "\"");
-                }
+        d1= sdf.parse(s1);
+        d2 = sdf.parse(s2);
+        long l1 = d1.getTime();
+        long l2 = d2.getTime();
+        for(Massage m: messages){
+            if (l1<=m.getTimestamp()&&l2>=m.getTimestamp()){
+                System.out.println(m.getAuthor() + " -> \"" + m.getMessage() + "\"");
             }
-
-        } catch (ParseException e) {
-
         }
 
     }
-
-
-
-
 }
