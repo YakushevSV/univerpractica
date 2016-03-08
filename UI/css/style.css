@@ -1,0 +1,210 @@
+body {
+    margin: 0;
+    padding: 0;
+    color: white;
+    height: 100%;
+
+    font:12px arial;  
+    color: #222;  
+    text-align:center;
+}  
+  
+form, p, span {  
+    margin:0;  
+    padding:0; 
+} 
+  
+input { font:12px arial; }  
+  
+a {  
+    color:#0000FF;  
+    text-decoration:none; 
+}  
+  
+a:hover { text-decoration:underline; }  
+ 
+#menu { padding:1% 3% 1% 3%; }
+#wrapper{  
+    margin:0 auto;  
+    margin-bottom: 1%;
+    padding-bottom:3%;  
+    background:#EBF4FB;  
+    width:40%;  
+    height: 75%;
+    border:1px solid #ACD8F0; 
+}  
+#chatbox {  
+    text-align:left;  
+    margin:0 auto;  
+    margin-bottom:1%; 
+    background:#fff;  
+    height: 60%;
+    width: 80%;
+    border:1px solid #ACD8F0;  
+    overflow:auto; 
+}  
+.header {
+    background-color: #f0f0f0;
+    padding: 1px;
+}
+.section-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+.section-headline {
+    font-family: 'Open Sans Bold';
+    color: #333333;
+    font-size: 38.5px;
+    line-height: 38.5px;
+    
+}
+.login-form{
+    position: absolute;
+    float: right;
+    top: 20px;
+    right: 20px;
+}
+
+footer{
+    font-family: "Open Sans";
+    color: #949494;/
+    font-size: 24px;
+}
+
+#userlgn{
+    width: 60%;
+    height: 5%;
+    border:1px solid #ACD8F0;
+}
+
+textarea {
+    resize: none;
+    width: 87%;
+    height: 20%;
+
+}
+.btn-send{
+    height: 5%;
+    margin-left: 6.5%;
+    display: block;
+    width: 25%;
+
+}
+ul{
+    list-style: none;
+}
+
+.talk-bubble {
+    display: inline-block;  
+    margin: 1%;
+    width: 90%;
+    height: auto;
+    background: lightyellow;
+
+    border: 3px solid #666;
+
+    border-radius: 30px;
+    -webkit-border-radius: 30px;
+    -moz-border-radius: 30px;
+}
+
+
+.talktext{
+  padding: 1em;
+  text-align: left;
+  line-height: 1.5em;
+}
+
+
+.btn-login {
+    display: inline-block;
+    padding: 3px 13px;
+    font-size: 14px;
+    line-height: 20px;
+    text-align: center;
+    cursor: pointer;
+    background-color: #337ab7;
+    border: 1px solid #337ab7;
+    border-radius: 4px;
+    font-family: 'Open Sans Semibold';
+}
+
+
+.btn-login:active {
+    color: rgb(51,51,51);
+    border: 1px solid rgb(204,204,204);
+    background: rgb(238,238,238) linear-gradient(rgb(238,238,238), rgba(187, 196, 213, 0.72));
+    box-shadow: 0 1px 2px rgba(0,0,0,.1) inset;
+}
+
+
+.btn-send{
+    padding: 3px 13px;
+    font-size: 14px;
+    line-height: 20px;
+    text-align: center;
+    cursor: pointer;
+    background-color: #337ab7;
+    border: 1px solid #337ab7;
+    border-radius: 4px;
+    font-family: 'Open Sans Semibold';
+    width: 29%;
+}
+.btn-send:active {
+    color: rgb(51,51,51);
+    border: 1px solid rgb(204,204,204);
+    background: rgb(238,238,238) linear-gradient(rgb(238,238,238), rgba(187, 196, 213, 0.72));
+    box-shadow: 0 1px 2px rgba(0,0,0,.1) inset;
+}
+
+
+.my-btn {
+    display: inline-block;
+    padding: 3px 13px;
+    font-size: 14px;
+    line-height: 20px;
+    color: #ffffff;
+    text-align: left;
+    cursor: pointer;
+    background-color: gray;
+    border: 1px solid #337ab7;
+    border-radius: 4px;
+    font-family: 'Open Sans Semibold';
+}
+
+
+.my-btn:active {
+    color: rgb(51,51,51);
+    border: 1px solid rgb(204,204,204);
+    background: rgb(238,238,238) linear-gradient(rgb(238,238,238), rgba(187, 196, 213, 0.72));
+    box-shadow: 0 1px 2px rgba(0,0,0,.1) inset;
+}
+
+#editbox{
+    
+    height: 30%;
+    width: 30%;
+    position: absolute;
+    display:none;
+}
+#editmsgarea{
+    height: 70%;
+    width: 100%;
+}
+.btn{
+    padding: 3px 13px;
+    font-size: 14px;
+    line-height: 20px;
+    text-align: center;
+    cursor: pointer;
+    background-color: #337ab7;
+    border: 1px solid #337ab7;
+    border-radius: 4px;
+    font-family: 'Open Sans Semibold';
+    width: 29%;
+}
+
+#userlist{
+    display: none;
+}
+

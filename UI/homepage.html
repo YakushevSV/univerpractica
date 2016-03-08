@@ -1,56 +1,55 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE">  
+<html lang="en"> 
     <head>
-        <meta charset="utf-8">        
-        <title>My Chat</title>
-        <link rel="stylesheet" href="style.css">
-        <link rel="stylesheet" href="adaptation.css"/>    
-    </head>
-<body>
+        <meta charset="utf-8">  
+        <title>My Chat </title>  
+        <link type="text/css" rel="stylesheet" href="css/style.css" /> 
+        <link type="text/css" rel="stylesheet" href="css/adaptation.css" />  
+        <script src="js/scripts.js"></script>
+    </head>  
+<body  onload="run()">  
     <header class="header">
         <div class="section-inner">
             <h1 class="section-headline">Мой чат</h1> 
 
             <div class="login-form">
                 <form>
-                    <!-- <img src="pictures/netw-eval.png" > -->
-                    <img src="pictures/netw-not_eval.png" >
-                    <input id="username" type="text" class="input-user" required placeholder="введите логин">
-                    <button id="logging" type="submit" class="btn-login">                    
-                        <img src="pictures/user_opt.png" alt="Войти">
-                    </button>
-                    <p><button id="logging" type="submit" class="btn-login">редактировать профиль</button></p>
+                     <img src="pictures/netw-not_eval.png" >               
                 </form>
+              
             </div>                  
         </div>
     </header>
 
-    <main>
-        <div class="chat">
-            <button id="btn-edit" type="button" class="my-btn marg">
+    <div id="wrapper">  
+        <div id="menu" >
+            <button id="btn-edit" type="button" class="my-btn marg" disabled="true">
                 Редактировать сообщение
-            </button>
-            <button id="btn-show" type="button" class="my-btn marg">
-                Все сообщения
-            </button>
-            <button id="btn-del" type="button" class="my-btn marg">
+            </button>            
+            <button id="btn-del" type="button" class="my-btn marg" disabled="true">
                 Удалить сообщение
             </button>
-                <p>
-                    <div class="chatbox"></div>
-                </p>
-            <form>
-                 
-                <div class="sendmessage">
-                    <input id="usermsg" type="text" class="input" placeholder="Введите сообщение" />
-                    <button id="btn-send" type="submit" class="btn-send">Отправить</button>
-                </div>
-            </form>
-           
-        </div>
-    </main>
+        </div>  
+        <div id = "editbox">            
+            <textarea name="editmessage" id = "editmsgarea" placeholder="Введите текст изменённого сообщения " ></textarea>
+            <button id="btn-ok" type="button" class="btn marg">ok              
+            </button>
+        </div> 
+        <div id="chatbox">
+            <ul class="messages">
+            </ul>
+        </div> 
+
+        <button id="rename" type="submit" class="btn-login">редактировать имя</button>
+        <input id="userlgn" type="text" class="input" placeholder="Введите имя" />
+        <textarea name="message" id = "msgarea" placeholder="Введите сообщение " ></textarea>
+        <button id="sendingmsg" type="submit" class="btn-send">send</button></p>
+      
+        <form name="message" action="">  
+    </div>
+
     <footer class="footer">
         <p class="text-muted">&copy Yakushev 2016</p>
     </footer>
-</body>
+</body>  
 </html>
