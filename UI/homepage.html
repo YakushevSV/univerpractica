@@ -15,60 +15,44 @@
         <form id="user-form">
             <span class="label label-danger">Offline</span>
             <!--required-->
-            <input id="userName" type="text" class="input-user" placeholder="Введите имя">
+            <input id="userName" type="text" class="input-user" placeholder="Введите имя" >
             <button id="Logger" type="submit" class="my-button-log " value= 1 >Login</button>
         </form>
     </div>
 </header>
     <div class="wrapper">
+        <!--style="display:none"-->
         <div class="todo-output-wrap" style="display:none">
-            <aside class="todo-output">
-                <pre id="output" class="todo-output-text"></pre>
-            </aside>
-        </div>
+        <aside class="todo-output">
+            <pre id="output" class="todo-output-text"></pre>
+        </aside>
+    </div>
+        <!--style="display:none"-->
+    <div class="todo-output-wrap" style="display:none">
+        <aside class="todo-output">
+            <pre id="outputm" class="todo-output-text"></pre>
+        </aside>
+    </div>
         <p></p>
             <div class="textbox" id="textbox">
-                    <div class="message">
-                        <div class="text-style-author">User 21: 16: 12</div>
-                        <h3 class="bubble text-style"> Hello</h3>
-                    </div>
-                <!-- <div class="message">
-                    <div class="text-style-author">Anton, 21: 16: 12</div>
-                    <h3 class="bubble text-style"> Hi,Welcome to the Oracle Help Center. Whether you are new to Oracle or an
-                        advanced user, you can find useful information about our products and services, ranging from getting
-                        started guides to advanced features.</h3>
-                </div> -->
-                <!-- <div class="message">
-                    <div class="text-style-author myText">User, 21: 32: 15
-                        <a href="#" class="edit"  title="Edit message"><i class="fa-pencil"></i></a>
-                        <a href="#" class="del" title="Remove message"><i class="fa-trash"></i></a>
-                    </div>
-                    <h3 class="bubble-you text-style ">Hello</h3>
-                </div> -->
-                <!-- <div class="message">
-                    <div class="text-style-author ">Anton, 22: 16: 12</div>
-                    <h3 class="bubble text-style">Ok? </h3>
-                </div> -->
+                <ul class="messagesList">
+                    
             </div>
 
             <div class="user-box">
                 <ul class="users-style-text">
-                    <!--<li class="fa-user me"> <span id="me">User</span></li>                                -->
                 </ul>
             </div>
 
         <form id="message-form">
-            <input id="mess" type="text" class="input marg" required placeholder="Введте сообщение">
-            <button type="submit" class="my-button-add marg">Отправить</button>
-            <!-- <div class="user-box">
-                <ul class="users-style-text">
-                    <li class="fa-user me"> <span id="me">User</span></li>
-                </ul>
-            </div> -->
+            <!--required-->
+            <input id="messInput" type="text" class="input marg" placeholder="Введте сообщение">
+            <button id = "Send_msg" type="submit" class="my-button-add marg">Отправить</button>
+            
         </form>
 
     </div>
-    <footer class="footer">
+    <footer class="footer" style="display:none">
         <div class="footer-content">&copy Yakushev 2016</div>
     </footer>
 
@@ -79,6 +63,19 @@
     </div>
     <div style="display:none" id="user-template-me">
         <li class="user me" data-user-id="идентификатор"> <span>User</span></li>
+    </div>
+
+    <div style="display:none" id="message-template-me">
+        <li class="message" data-massage-id="идентификатор" massage-author-id = "идентификатор автора">
+                    <div class="text-style-author myText">UserName</div>
+                    <h3 class="bubble-you text-style">Text </h3>
+        </li>
+    </div>
+    <div style="display:none" id="message-template">
+        <li class="message" data-massage-id="идентификатор" massage-author-id = "идентификатор автора">
+            <div class="text-style-author ">UserName</div>
+            <h3 class="bubble text-style">Text </h3>
+        </li>
     </div>
 
 
