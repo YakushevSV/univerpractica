@@ -1,178 +1,133 @@
-var el = null;
-var name = null;
-var array = new Array(100);
-var n = 0;
-var f = true;
-
-
+'use strict';
+var usersList = [];
+var f= false;
 function run(){
-	var button_send = document.getElementById('sendingmsg');
-	button_send.addEventListener('click', onSendButtonClick);
+	var btnLog = document.getElementById('Logger');
+    //if(f){
+    //    btnLog.innerText  = "Logout";
+    //}else{
+    //    btnLog.innerText  = "Login";
+    //}
+	btnLog.addEventListener('click',onLogButtonClick);
+	usersList = loadUsers() || [
+			newUser('User', false),
+			newUser('User2', false)
+		];
 
-	
-	var chat  = document.getElementById('chatbox');
-	chat.addEventListener('click', delegateEvent);
+	renderUsers(usersList);
+    checkLog(btnLog)
+}
+function checkLog(btnLog){
+    var item = usersList[usersList.length-1];
+    if(item.me){
+        btnLog.innerText  = "Logout";
+        f = false;
+    }else{
+        btnLog.innerText  = "Login";
+        f= true;
+    }
 
-	
-	var button_del = document.getElementById('btn-del');
-	button_del.addEventListener('click' , onDelButtonClick);
+}
+function onLogButtonClick(){
+    var btn = document.getElementById('Logger');
+    if(f){
+        var text = document.getElementById('userName');
+        if(text.value == '')
+            return;
 
-	var button_edit = document.getElementById('btn-edit');
-	button_edit.addEventListener('click' , onEditButtonClick);
+        var newUsr = newUser(text.value, true);
+        usersList.push(newUsr);
+        text.value = '';
+        renderUsers([newUsr], 2);
+        saveUsers(usersList);
 
-	var button_rename = document.getElementById('rename');
-	button_rename.addEventListener("click", onRenameButtonClick);	
+    } else{
+
+    }
+
+
+
 }
 
 
-function onRenameButtonClick(){
+function saveUsers(listToSave) {
+    if(typeof(Storage) == "undefined") {
+        alert('localStorage is not accessible');
+        return;
+    }
+
+    localStorage.setItem("Users List", JSON.stringify(listToSave));
+}
 
 
-	var user = document.getElementById('userlgn');
-	if(user.value){
-		var msg = createItem("<пользователь изменил имя на "+ user.value + " >");
-		var list = document.getElementsByClassName('messages')[0];
-		list.appendChild(msg);
+
+function renderUsers(users) {
+	for(var i = 0; i < users.length; i++) {
+		renderUser(users[i]);
 	}
-	
+
+	renderLocalStorage(usersList);
+	//renderCounter(usersList);
 }
+function renderUser(usr){
+	var items = document.getElementsByClassName('users-style-text')[0];
+    if(usr.me ){
+        var element = elementFromTemplateMe();
+    } else{
+        var element = elementFromTemplate();
+    }
 
 
-function onEditButtonClick(){	
-	var editbox = document.getElementById('editbox');	
-	editbox.style.display = "block";
-
-	var btn_ok = document.getElementById('btn-ok');
-	btn_ok.addEventListener('click', onOkButtonClick);
-	
+	renderUserState(element, usr);
+	items.appendChild(element);
 }
+function elementFromTemplate() {
+	var template = document.getElementById("user-template");
 
+	return template.firstElementChild.cloneNode(true);
+}
+function elementFromTemplateMe() {
+    var template = document.getElementById("user-template-me");
 
-function onOkButtonClick(){
-	var txtarea = document.getElementById('editmsgarea');
-	if (txtarea.value) {
-		var l = document.getElementsByClassName('messages')[0];
-		elem = createItem(" <пользователь изменил сообщение>" + txtarea.value);
-		txtarea.value = "";
-		l.replaceChild(elem, el.parentElement);
+    return template.firstElementChild.cloneNode(true);
+}
+function renderUserState(element, usr){
+	//if(task.done) {
+	//	element.classList.add('strikeout');
+	//	element.firstElementChild.checked = true;
+	//} else {
+	//	element.classList.remove('strikeout');
+	//	element.firstElementChild.checked = false;
+	//}
+
+	element.setAttribute('data-user-id', usr.id);
+	element.lastChild.textContent = usr.name;
+}
+function renderLocalStorage(value){
+	var output = document.getElementById('output');
+
+	output.innerText = "localStorage:\n" + JSON.stringify(value, null, 2) + ";";
+}
+function loadUsers() {
+	if(typeof(Storage) == "undefined") {
+		alert('localStorage is not accessible');
+		return;
 	}
-	var editbox = document.getElementById('editbox');	
-	editbox.style.display = "none";
 
-	el.style.background = "";
-	document.getElementById('btn-del').disabled = true;
-	document.getElementById('btn-edit').disabled = true;
+	var item = localStorage.getItem("Users List");
 
-	document.getElementById('btn-del').style.background = "";
-	document.getElementById('btn-edit').style.background = "";
+	return item && JSON.parse(item);
 }
-
-
-
-function onDelButtonClick(){
-	var l = document.getElementsByClassName('messages')[0];
-	elem = createItem(" пользователь "  + "удалил сообщение");
-	l.replaceChild(elem, el.parentElement);
-
-	document.getElementById('btn-del').disabled = true;
-	document.getElementById('btn-edit').disabled = true;
-
-	document.getElementById('btn-del').style.background = "";
-	document.getElementById('btn-edit').style.background = "";
-
-	
+function newUser(str, Me){
+	return{
+		name: str,
+        me: !!Me,
+		id: ''+ uniqueId()
+	};
 }
+function uniqueId() {
+	var date = Date.now();
+	var random = Math.random() * Math.random();
 
-function delegateEvent(evtObj) {
-	if(el != null ){
-		if (el.style.background != "") {
-				el.style.background = "";
-				document.getElementById('btn-del').disabled = true;
-				document.getElementById('btn-edit').disabled = true;
-
-				document.getElementById('btn-del').style.background = "";
-				document.getElementById('btn-edit').style.background = "";}
-			
-		 	}
- 	if(el == evtObj.target.parentElement ){
- 		if (f) {
- 			el.style.background = "";
-			document.getElementById('btn-del').disabled = true;
-			document.getElementById('btn-edit').disabled = true;
-
-			document.getElementById('btn-del').style.background = "";
-			document.getElementById('btn-edit').style.background = "";
-			f = false;
- 		}else {
- 			f= true;
- 			el.style.background = "yellow";			 
-			document.getElementById('btn-del').disabled = false;
-			document.getElementById('btn-edit').disabled = false;
-
-			document.getElementById('btn-del').style.background = "#337ab7";
-			document.getElementById('btn-edit').style.background = "#337ab7";
- 		}
-
- 		
-
- 	}else if(  evtObj.target.className == "talktext"){
-		
-		el = evtObj.target.parentElement;
-		if(el.style.background == ""){
-			el.style.background = "yellow";
-			 
-			document.getElementById('btn-del').disabled = false;
-			document.getElementById('btn-edit').disabled = false;
-
-			document.getElementById('btn-del').style.background = "#337ab7";
-			document.getElementById('btn-edit').style.background = "#337ab7";
-
-		}else{
-			el.style.background = "";
-			document.getElementById('btn-del').disabled = true;
-			document.getElementById('btn-edit').disabled = true;
-
-			document.getElementById('btn-del').style.background = "";
-			document.getElementById('btn-edit').style.background = "";
-		}	
-		
-	}
-}
-
-
-
-
-
-function onSendButtonClick(){
-		
-	var msg_text = document.getElementById('msgarea');
-	var user = document.getElementById('userlgn');
-	if(msg_text.value && user.value){
-		if (name === "null") {
-			name = user.value;
-		} else{
-			if(name != user.value){
-
-			}
-		}		
-		var msg = createItem(msg_text.value);
-		var list = document.getElementsByClassName('messages')[0];
-		list.appendChild(msg);
-
-
-		msg_text.value = '';
-	}	
-}
-
-function createItem(text){
-	var divItem = document.createElement('li');
-	var mess = document.createElement('div');
-	mess.className = "talk-bubble";//tri-right round border right-top";
-	var textmsg = document.createElement('div');
-	textmsg.className = "talktext";
-	textmsg.appendChild(document.createTextNode(name + " : " + text ));
-	mess.appendChild(textmsg);
-	divItem.appendChild(mess);
-
-	return divItem;
+	return Math.floor(date * random);
 }
