@@ -1,22 +1,22 @@
 @media (max-width: 960px){
-    .user-box {
-        display: none;
-    }
-
+    
     .my-button-add{
       width: 15%;
     }
 
-    .input{
+    /*.input{
         width: 75%;
     }
-
+*/
     .input-user{
-        width: 110px;
+        width: 60%;
     }
     .textbox{
         width: 90%;
         height: 95%;
+    }
+    textarea{
+        width: 91%;
     }
 
     .wrapper{
@@ -24,16 +24,10 @@
     }
 }
 
-@media(min-width: 961px){
-    #list{
-        display: none;
-    }
-}
+
 
 @media (max-width: 420px) {
-    .user-box {
-        display: none;
-    }
+   
 
     .wrapper {
         position: absolute;
@@ -41,12 +35,7 @@
         height: 74%;
     }
 
-    .input-user{
-        width: 80px;
-    }
-
-
-    .bubble {
+   .bubble {
         width: 95%;
     }
 
