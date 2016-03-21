@@ -1,7 +1,4 @@
 var el = null;
-var name = null;
-var array = new Array(100);
-var n = 0;
 var f1 = true;
 
 
@@ -19,10 +16,6 @@ function run(){
 
 	var button_edit = document.getElementById('btn-edit');
 	button_edit.addEventListener('click' , onEditButtonClick);
-
-
-
-
 
 	var btnLog = document.getElementById('logging');
 
@@ -77,19 +70,17 @@ function newMessage(text, aut, autId) {
     };
 }
 function renderMessages(messages) {
-//    var curAut = usersList[usersList.length - 1];
-        for(var i = 0; i < messages.length; i++) {
-                if(curAut!=null&&curAut.id == messages[i].authorId){
-                    renderMessage(messages[i], 2);
-                } else if(messages[i].author == "system"){
-                    renderMessage(messages[i], 3);
-                    
-                }else{
-                    renderMessage(messages[i], 1);
-                }
-        } 
+    for(var i = 0; i < messages.length; i++) {
+            if(curAut!=null&&curAut.id == messages[i].authorId){
+                renderMessage(messages[i], 2);
+            } else if(messages[i].author == "system"){
+                renderMessage(messages[i], 3);
+                
+            }else{
+                renderMessage(messages[i], 1);
+            }
+    } 
     renderLocalStorageMess(messagesList);
-    //renderCounter(taskList);
 }
 function renderLocalStorageMess(value){
     var output = document.getElementById('outputm');
@@ -137,13 +128,6 @@ function loadMessages() {
     return item && JSON.parse(item);
 }
 function renderMessageState(element, msg){
-    //if(task.done) {
-    //    element.classList.add('strikeout');
-    //    element.firstElementChild.checked = true;
-    //} else {
-    //    element.classList.remove('strikeout');
-    //    element.firstElementChild.checked = false;
-    //}
     if(msg.author == "system"){
         element.setAttribute('data-massage-id', msg.id);
         element.setAttribute('massage-author-id', msg.authorId);
@@ -157,8 +141,6 @@ function renderMessageState(element, msg){
         element.firstElementChild.textContent = msg.author;
     }
     
-    //    element.lastChild.textContent = msg.description;
-    //element.firstChild.textContent = msg.author;
 }
 function saveMessages(listToSave) {
     if(typeof(Storage) == "undefined") {
@@ -168,12 +150,6 @@ function saveMessages(listToSave) {
 
     localStorage.setItem("Messages List", JSON.stringify(listToSave));
 }
-
-
-
-
-
-
 //--------------------------------------------------------------
 function onRenameButtonClick(){
     var text = document.getElementById('userlgn');
@@ -221,10 +197,8 @@ function loadCur(){
     	return item && JSON.parse(item);
 }
 function checkLog(btnLog){
-//    var item = usersList[usersList.length-1];
     if(curAut != null){
         var text = document.getElementById('userlgn');
-        //text.readOnly = true;
         text.placeholder = '';
         btnLog.innerText  = "Logout";
         document.getElementById('rename').disabled = false;
@@ -268,10 +242,8 @@ function onLogButtonClick(element){
         text.value = '';
         saveCur(curAut);
     } else{
-//        curAut = null;
         var index = -1;
         for(var i = 0; i < usersList.length; i++ ){
-//            if(usersList[i].name == text.value){
               if(usersList[i].name == curAut.name){
                 index = i;
                 break;
@@ -283,9 +255,6 @@ function onLogButtonClick(element){
         saveUsers(usersList);
         saveCur(curAut);
     }
-
-
-
 }
 function saveCur(elementToSave){
     if(typeof(Storage) == "undefined") {
@@ -309,19 +278,14 @@ function renderUsers(users) {
 	}
 
 	renderLocalStorage(usersList);
-	//renderCounter(usersList);
 }
 function renderUser(usr){
-//	var items = document.getElementsByClassName('users-style-text')[0];
     if(usr.me ){
         var element = elementFromTemplateMe();
     } else{
         var element = elementFromTemplate();
     }
-
-
 	renderUserState(element, usr);
-//	items.appendChild(element);
 }
 function elementFromTemplate() {
 	var template = document.getElementById("user-template");
@@ -334,14 +298,6 @@ function elementFromTemplateMe() {
     return template.firstElementChild.cloneNode(true);
 }
 function renderUserState(element, usr){
-	//if(task.done) {
-	//	element.classList.add('strikeout');
-	//	element.firstElementChild.checked = true;
-	//} else {
-	//	element.classList.remove('strikeout');
-	//	element.firstElementChild.checked = false;
-	//}
-
 	element.setAttribute('data-user-id', usr.id);
 	element.lastChild.textContent = usr.name;
 }
@@ -397,7 +353,7 @@ function delegateEvent(evtObj) {
 			f1 = false;
  		}else {
  			f1= true;
- 			el.style.background = "yellow";
+ 			el.style.background = "#90EE90";
 			document.getElementById('btn-del').disabled = false;
 			document.getElementById('btn-edit').disabled = false;
 
@@ -411,7 +367,7 @@ function delegateEvent(evtObj) {
 
 		el = evtObj.target;
 		if(el.style.background == ""){
-			el.style.background = "yellow";
+			el.style.background = "#90EE90";
 
 			document.getElementById('btn-del').disabled = false;
 			document.getElementById('btn-edit').disabled = false;
@@ -433,39 +389,21 @@ function delegateEvent(evtObj) {
 
 function onDelButtonClick(){
     var ind = 0;
-
     var _id = el.parentElement.attributes[1].nodeValue;
     for(var i=0; i<messagesList.length; i++){
         if(_id == messagesList[i].id){
             ind = i;
             break;
         }
-
     }
     var elem = newMessage("пользователь " + curAut.name + "удалил сообщение "  , "system", uniqueId() );
-//    messagesList.replaceChild(elem , messagesList[ind]);
     messagesList[ind] = elem;
-//    renderMessages([elem]);
     var items = document.getElementsByClassName('messagesList')[0];
     var element = elementMessageFromTemplateSys();
     renderMessageState(element, elem);
-//    items.appendChild(element);
     items.replaceChild(element , el.parentElement);
 
     saveMessages(messagesList);
-
-//    messagesList.();
-
-	//var l = document.getElementsByClassName('messages')[0];
-	//elem = createItem(" пользователь "  + "удалил сообщение");
-//	l.replaceChild(elem, el.parentElement);
-//
-//	document.getElementById('btn-del').disabled = true;
-//	document.getElementById('btn-edit').disabled = true;
-//
-//	document.getElementById('btn-del').style.background = "";
-//	document.getElementById('btn-edit').style.background = "";
-
 
 }
 
@@ -501,44 +439,14 @@ function onOkButtonClick(){
             tmpel1 = tmpel;
         }
         messagesList.push(tmpel1);
-//        messagesList[ind] = elem;
-//    renderMessages([elem]);
-    var items = document.getElementsByClassName('messagesList')[0];
-//    items[ind].innerText = txtarea.value;
-//    items.getItem()
-    el.innerText = txtarea.value;
-    var element = elementMessageFromTemplateSys();
-    renderMessageState(element, elem);
-    items.insertBefore(element, items.childNodes[ind + 1]);
+        var items = document.getElementsByClassName('messagesList')[0];
+        el.innerText = txtarea.value;
+        var element = elementMessageFromTemplateSys();
+        renderMessageState(element, elem);
+        items.insertBefore(element, items.childNodes[ind + 1]);
 
-//    for(var i = ind; i<items.childElementCount; i++){
-//                tmpel = items[i];
-//                items[i] = tmpel1;
-//                tmpel1 = tmpel;
-//            }
-//    items.appendChild(tmpel1);
-//    items.replaceChild(element , el.parentElement);
-
-    saveMessages(messagesList);
-
-
-
-
-
-
-
-//	    el.innerHTML= "<b><пользователь изменил сообщение></b>" + txtarea.value;
-//        el.innerText= "<b><пользователь изменил сообщение></b>" + txtarea.value;
-
-//	    renderMessages(messagesList);
-//        saveMessages(messagesList);
-
-
-//		var l = document.getElementsByClassName('messages')[0];
-//		elem = createItem(" <пользователь изменил сообщение>" + txtarea.value);
-//		txtarea.value = "";
-//		l.replaceChild(elem, el.parentElement);
-	}
+        saveMessages(messagesList);
+    	}
 	var editbox = document.getElementById('editbox');
 	editbox.style.display = "none";
 
@@ -549,75 +457,3 @@ function onOkButtonClick(){
 	document.getElementById('btn-del').style.background = "";
 	document.getElementById('btn-edit').style.background = "";
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//function onRenameButtonClick(){
-//
-//
-//	var user = document.getElementById('userlgn');
-//	if(user.value){
-//		var msg = createItem("<пользователь изменил имя на "+ user.value + " >");
-//		var list = document.getElementsByClassName('messages')[0];
-//		list.appendChild(msg);
-//	}
-//
-//}
-//
-//
-
-//
-//
-//
-
-//
-
-//
-//
-//
-//
-//
-//function onSendButtonClick(){
-//
-//	var msg_text = document.getElementById('msgarea');
-//	var user = document.getElementById('userlgn');
-//	if(msg_text.value && user.value){
-//		if (name === "null") {
-//			name = user.value;
-//		} else{
-//			if(name != user.value){
-//
-//			}
-//		}
-//		var msg = createItem(msg_text.value);
-//		var list = document.getElementsByClassName('messages')[0];
-//		list.appendChild(msg);
-//
-//
-//		msg_text.value = '';
-//	}
-//}
-//
-//function createItem(text){
-//	var divItem = document.createElement('li');
-//	var mess = document.createElement('div');
-//	mess.className = "talk-bubble";//tri-right round border right-top";
-//	var textmsg = document.createElement('div');
-//	textmsg.className = "talktext";
-//	textmsg.appendChild(document.createTextNode(name + " : " + text ));
-//	mess.appendChild(textmsg);
-//	divItem.appendChild(mess);
-//
-//	return divItem;
-//}
