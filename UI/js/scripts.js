@@ -481,6 +481,59 @@ function onEditButtonClick(){
 function onOkButtonClick(){
 	var txtarea = document.getElementById('editmsgarea');
 	if (txtarea.value) {
+	    var ind = 0;
+
+        var _id = el.parentElement.attributes[1].nodeValue;
+        for(var i=0; i<messagesList.length; i++){
+            if(_id == messagesList[i].id){
+                ind = i;
+                break;
+            }
+
+        }
+        messagesList[ind].description = txtarea.value;
+        var elem = newMessage("пользователь " + curAut.name + " изменил сообщение "  , "system", uniqueId() );
+        var tmpel1 = elem;
+        var tmpel ;
+        for(var i = ind; i<messagesList.length; i++){
+            tmpel = messagesList[i];
+            messagesList[i] = tmpel1;
+            tmpel1 = tmpel;
+        }
+        messagesList.push(tmpel1);
+//        messagesList[ind] = elem;
+//    renderMessages([elem]);
+    var items = document.getElementsByClassName('messagesList')[0];
+//    items[ind].innerText = txtarea.value;
+//    items.getItem()
+    el.innerText = txtarea.value;
+    var element = elementMessageFromTemplateSys();
+    renderMessageState(element, elem);
+    items.insertBefore(element, items.childNodes[ind + 1]);
+
+//    for(var i = ind; i<items.childElementCount; i++){
+//                tmpel = items[i];
+//                items[i] = tmpel1;
+//                tmpel1 = tmpel;
+//            }
+//    items.appendChild(tmpel1);
+//    items.replaceChild(element , el.parentElement);
+
+    saveMessages(messagesList);
+
+
+
+
+
+
+
+//	    el.innerHTML= "<b><пользователь изменил сообщение></b>" + txtarea.value;
+//        el.innerText= "<b><пользователь изменил сообщение></b>" + txtarea.value;
+
+//	    renderMessages(messagesList);
+//        saveMessages(messagesList);
+
+
 //		var l = document.getElementsByClassName('messages')[0];
 //		elem = createItem(" <пользователь изменил сообщение>" + txtarea.value);
 //		txtarea.value = "";
