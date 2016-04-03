@@ -39,6 +39,9 @@ public class Response {
     public static Response ok(String body) {
         return new Response(Constants.RESPONSE_CODE_OK, body);
     }
+    public static Response gone(){
+        return new Response(Constants.RESPONSE_CODE_GONE,"");
+    }
 
     public static Response withCode(int code) {
         return new Response(code, "");

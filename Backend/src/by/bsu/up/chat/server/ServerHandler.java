@@ -111,7 +111,28 @@ public class ServerHandler implements HttpHandler {
     }
 
     private Response doDelete(HttpExchange httpExchange) {
-        return Response.withCode(Constants.RESPONSE_CODE_NOT_IMPLEMENTED);
+       // return Response.withCode(Constants.RESPONSE_CODE_NOT_IMPLEMENTED);
+        String query = httpExchange.getRequestURI().getQuery();
+        if (query == null) {
+            return Response.badRequest("Absent query in request");
+        }
+        Map<String, String> map = queryToMap(query);
+        String token = map.get(Constants.REQUEST_PARAM_MESSAGE_ID);
+        if (StringUtils.isEmpty(token)) {
+            return Response.badRequest("Token query parameter is required");
+        }
+        try {
+            String id = token;
+            if(!messageStorage.removeMessage(id)){
+                return Response.badRequest(
+                        String.format("Incorrect token in request: %s. Server does not have message with such id", id));
+            }
+//            String responseBody = MessageHelper.buildServerResponseBody(messages, messageStorage.size());
+//            return Response.ok(responseBody);
+            return Response.gone();
+        } catch (InvalidTokenException e) {
+            return Response.badRequest(e.getMessage());
+        }
     }
 
     private Response doOptions(HttpExchange httpExchange) {

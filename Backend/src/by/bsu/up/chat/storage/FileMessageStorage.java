@@ -86,7 +86,20 @@ public class FileMessageStorage implements MessageStorage {
 
     @Override
     public synchronized boolean removeMessage(String messageId) {
-        throw new UnsupportedOperationException("Removing of messages is not supported yet");
+        //throw new UnsupportedOperationException("Removing of messages is not supported yet");
+        int index = contains(messageId);
+        if(index == -1)
+            return  false;
+        messages.remove(index);
+        return true;
+    }
+    public int contains(String str){
+        for (int i = 0; i < messages.size(); i++){
+            if(messages.get(i).getId().equals(str)){
+                return i;
+            }
+        }
+        return -1;
     }
 
     @Override
