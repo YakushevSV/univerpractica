@@ -81,7 +81,20 @@ public class FileMessageStorage implements MessageStorage {
 
     @Override
     public boolean updateMessage(Message message) {
-        throw new UnsupportedOperationException("Update for messages is not supported yet");
+        //throw new UnsupportedOperationException("Update for messages is not supported yet");
+        int index = contains(message.getId());
+        if(index == -1)
+            return  false;
+        messages.get(index).setText(message.getText());
+        try{
+            FileWriter fw = new FileWriter(DEFAULT_PERSISTENCE_FILE);
+            Gson gson = new Gson();
+            fw.write(gson.toJson(messages));
+            fw.close();
+        }catch (IOException e){
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -91,6 +104,14 @@ public class FileMessageStorage implements MessageStorage {
         if(index == -1)
             return  false;
         messages.remove(index);
+        try{
+            FileWriter fw = new FileWriter(DEFAULT_PERSISTENCE_FILE);
+            Gson gson = new Gson();
+            fw.write(gson.toJson(messages));
+            fw.close();
+        }catch (IOException e){
+            return false;
+        }
         return true;
     }
     public int contains(String str){

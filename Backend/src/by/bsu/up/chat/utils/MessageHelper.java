@@ -124,6 +124,19 @@ public class MessageHelper  {
         message.setText(text);
         return message;
     }
+    public static Message getEditMessage(InputStream inputStream)throws ParseException{
+        JSONObject jsonObject = stringToJsonObject(inputStreamToString(inputStream));
+        String id = ((String) jsonObject.get(Constants.Message.FIELD_ID));
+        String author = "";
+        long timestamp = (long)0;
+        String text = ((String) jsonObject.get(Constants.Message.FIELD_TEXT));
+        Message message = new Message();
+        message.setId(id);
+        message.setAuthor(author);
+        message.setTimestamp(timestamp);
+        message.setText(text);
+        return message;
+    }
 
     public static JSONObject stringToJsonObject(String json) throws ParseException {
         // The same as (JSONObject) jsonParser.parse(json.trim());
