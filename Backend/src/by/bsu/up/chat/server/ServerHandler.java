@@ -107,12 +107,12 @@ public class ServerHandler implements HttpHandler {
     }
 
     private Response doPut(HttpExchange httpExchange) {
-        //return Response.withCode(Constants.RESPONSE_CODE_NOT_IMPLEMENTED);
         try {
             Message message = MessageHelper.getEditMessage(httpExchange.getRequestBody());
-            //logger.info(String.format("Received new message from user: %s", message));
-            messageStorage.updateMessage(message);
-            return Response.ok();
+            //logger.info(String.format("message has been changed));
+            if(messageStorage.updateMessage(message))
+                return Response.ok();
+            return new Response(Constants.RESPONSE_CODE_BAD_REQUEST, "Incorrect request body");
         } catch (ParseException e) {
             logger.error("Could not parse message.", e);
             return new Response(Constants.RESPONSE_CODE_BAD_REQUEST, "Incorrect request body");
@@ -120,7 +120,6 @@ public class ServerHandler implements HttpHandler {
     }
 
     private Response doDelete(HttpExchange httpExchange) {
-       // return Response.withCode(Constants.RESPONSE_CODE_NOT_IMPLEMENTED);
         String query = httpExchange.getRequestURI().getQuery();
         if (query == null) {
             return Response.badRequest("Absent query in request");
@@ -137,8 +136,8 @@ public class ServerHandler implements HttpHandler {
                         String.format("Incorrect token in request: %s. Server does not have message with such id", id));
             }
 //            String responseBody = MessageHelper.buildServerResponseBody(messages, messageStorage.size());
-//            return Response.ok(responseBody);
-            return Response.gone();
+            return Response.ok();
+            //return Response.gone();
         } catch (InvalidTokenException e) {
             return Response.badRequest(e.getMessage());
         }

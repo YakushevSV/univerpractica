@@ -28,7 +28,6 @@ public class FileMessageStorage implements MessageStorage {
 
     public FileMessageStorage(){
         Gson gson = new Gson();
-        //messages = new ArrayList();
         Type collectionType = new TypeToken<Collection<Message>>(){}.getType();
         try{
             Scanner sc = new Scanner(new File(DEFAULT_PERSISTENCE_FILE));
@@ -81,7 +80,6 @@ public class FileMessageStorage implements MessageStorage {
 
     @Override
     public boolean updateMessage(Message message) {
-        //throw new UnsupportedOperationException("Update for messages is not supported yet");
         int index = contains(message.getId());
         if(index == -1)
             return  false;
@@ -99,7 +97,6 @@ public class FileMessageStorage implements MessageStorage {
 
     @Override
     public synchronized boolean removeMessage(String messageId) {
-        //throw new UnsupportedOperationException("Removing of messages is not supported yet");
         int index = contains(messageId);
         if(index == -1)
             return  false;
