@@ -6,6 +6,11 @@ var usersList = [];
 var curAut;
 var f= false;
 
+var Application = {
+    mainUrl : 'http://localhost:8080/chat',    
+    token : 'TN11EN'
+};
+
 var messagesList = [];
 
 
@@ -33,11 +38,13 @@ function run(){
     var btnSend = document.getElementById('sendingmsg');
     btnSend.addEventListener('click', onSendButtonClick);
 
-    messagesList = loadMessages() || [
-            newMessage('Hello to all','User 21: 16: 12', usersList[0].id),
-            newMessage('Hello','User2 21: 32: 15', usersList[1].id)
-        ];
-    renderMessages(messagesList);
+    // messagesList = loadMessages() || [
+    //         newMessage('Hello to all','User 21: 16: 12', usersList[0].id),
+    //         newMessage('Hello','User2 21: 32: 15', usersList[1].id)
+    //     ];
+   // messagesList = loadMessages();
+    loadMessages(function(){renderMessages(messagesList)});
+    //renderMessages(messagesList);
 
     var button_rename = document.getElementById('rename');
     button_rename.addEventListener("click", onRenameButtonClick);
@@ -46,6 +53,8 @@ function run(){
     chat.addEventListener('click', delegateEvent);
 
 }
+
+
 
 function onSendButtonClick(){
 
@@ -117,16 +126,95 @@ function elementMessageFromTemplateSys() {
 
     return template.firstElementChild.cloneNode(true);
 }
-function loadMessages() {
-    if(typeof(Storage) == "undefined") {
-        alert('localStorage is not accessible');
-        return;
+function loadMessages(render) {
+    // if(typeof(Storage) == "undefined") {
+    //     alert('localStorage is not accessible');
+    //     return;
+    // }
+
+    // var item = localStorage.getItem("Messages List");
+
+    // return item && JSON.parse(item);
+
+    var url = Application.mainUrl + '?token=' + Application.token;
+
+    ajax('GET', url, null, function(responseText){
+        var response = JSON.parse(responseText);
+
+        Application.token = response.token;
+        messagesList = response.messages;
+        //Application.taskList = response.tasks;       
+        render();
+    });
+
+
+}
+//------------------------------------------------------------------
+function ajax(method, url, data, continueWith, continueWithError) {
+    var xhr = new XMLHttpRequest();
+
+    continueWithError = continueWithError || defaultErrorHandler;
+    xhr.open(method || 'GET', url, true);
+
+    xhr.onload = function () {
+        if (xhr.readyState !== 4)
+            return;
+
+        if(xhr.status != 200) {
+            continueWithError('Error on the server side, response ' + xhr.status);
+            return;
+        }
+
+        if(isError(xhr.responseText)) {
+            continueWithError('Error on the server side, response ' + xhr.responseText);
+            return;
+        }
+
+        continueWith(xhr.responseText);
+    };    
+
+    xhr.ontimeout = function () {
+        ontinueWithError('Server timed out !');
+    };
+
+    xhr.onerror = function (e) {
+        var errMsg = 'Server connection error !\n'+
+        '\n' +
+        'Check if \n'+
+        '- server is active\n'+
+        '- server sends header "Access-Control-Allow-Origin:*"\n'+
+        '- server sends header "Access-Control-Allow-Methods: PUT, DELETE, POST, GET, OPTIONS"\n';
+
+        continueWithError(errMsg);
+    };
+
+    xhr.send(data);
+}
+function defaultErrorHandler(message) {
+    console.error(message);
+    //output(message);
+}
+
+// function output(value){
+//     var output = document.getElementById('output');
+
+//     output.innerText = JSON.stringify(value, null, 2);
+// }
+
+function isError(text) {
+    if(text == "")
+        return false;
+    
+    try {
+        var obj = JSON.parse(text);
+    } catch(ex) {
+        return true;
     }
 
-    var item = localStorage.getItem("Messages List");
-
-    return item && JSON.parse(item);
+    return !!obj.error;
 }
+//--------------------------------------------------------------
+
 function renderMessageState(element, msg){
     if(msg.author == "system"){
         element.setAttribute('data-massage-id', msg.id);
@@ -137,7 +225,7 @@ function renderMessageState(element, msg){
         element.setAttribute('massage-author-id', msg.authorId);
 
 
-        element.lastElementChild.textContent = msg.description;
+        element.lastElementChild.textContent = msg.text;
         element.firstElementChild.textContent = msg.author;
     }
     
