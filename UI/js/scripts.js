@@ -61,21 +61,29 @@ function onSendButtonClick(){
     var msg_text = document.getElementById('msgarea');
     if (msg_text.value && !f){
         var newMsg = newMessage(msg_text.value, curAut.name, curAut.id );
-        messagesList.push(newMsg);
-        renderMessages([newMsg]);
-        saveMessages(messagesList);
+        //messagesList.push(newMsg);
+        ajax('POST', Application.mainUrl, JSON.stringify(newMsg), function(){
+           // Application.taskList.push(task);
+            messagesList.push(newMsg);
+            renderMessages([newMsg]);
+            //done();
+        });
+        // renderMessages([newMsg]);
+        // saveMessages(messagesList);
 
         msg_text.value = '';
     }
 
 }
 
-function newMessage(text, aut, autId) {
+function newMessage(text_, aut, autId) {
+    var now = new Date();
     return {
-        description:text,
+        text:text_,
         author:aut,
         authorId: autId,
-        id: '' + uniqueId()
+        id: '' + uniqueId(),
+        timestamp:now.getTime()
     };
 }
 function renderMessages(messages) {
@@ -219,7 +227,7 @@ function renderMessageState(element, msg){
     if(msg.author == "system"){
         element.setAttribute('data-massage-id', msg.id);
         element.setAttribute('massage-author-id', msg.authorId);
-        element.lastElementChild.textContent = msg.description;
+        element.lastElementChild.textContent = msg.text;//description
     }else{
         element.setAttribute('data-massage-id', msg.id);
         element.setAttribute('massage-author-id', msg.authorId);
@@ -517,7 +525,7 @@ function onOkButtonClick(){
             }
 
         }
-        messagesList[ind].description = txtarea.value;
+        messagesList[ind].text = txtarea.value;
         var elem = newMessage("пользователь " + curAut.name + " изменил сообщение "  , "system", uniqueId() );
         var tmpel1 = elem;
         var tmpel ;

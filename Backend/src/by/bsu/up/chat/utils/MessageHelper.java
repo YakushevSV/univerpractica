@@ -113,12 +113,14 @@ public class MessageHelper  {
 
     public static Message getClientMessage(InputStream inputStream) throws ParseException {
         JSONObject jsonObject = stringToJsonObject(inputStreamToString(inputStream));
+        String autId = ((String) jsonObject.get(Constants.Message.FIELD_AUTHOR_ID));
         String id = ((String) jsonObject.get(Constants.Message.FIELD_ID));
         String author = ((String) jsonObject.get(Constants.Message.FIELD_AUTHOR));
         long timestamp = ((long) jsonObject.get(Constants.Message.FIELD_TIMESTAMP));
         String text = ((String) jsonObject.get(Constants.Message.FIELD_TEXT));
         Message message = new Message();
         message.setId(id);
+        message.setAutId(autId);
         message.setAuthor(author);
         message.setTimestamp(timestamp);
         message.setText(text);
@@ -160,6 +162,7 @@ public class MessageHelper  {
     private static JSONObject messageToJSONObject(Message message) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(Constants.Message.FIELD_ID, message.getId());
+        jsonObject.put(Constants.Message.FIELD_AUTHOR_ID, message.getAutId());
         jsonObject.put(Constants.Message.FIELD_AUTHOR, message.getAuthor());
         jsonObject.put(Constants.Message.FIELD_TIMESTAMP, message.getTimestamp());
         jsonObject.put(Constants.Message.FIELD_TEXT, message.getText());

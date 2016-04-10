@@ -5,9 +5,18 @@ import java.io.Serializable;
 public class Message implements Serializable {
 
     private String id;
+    private String authorId;
     private String author;
     private long timestamp;
     private String text;
+
+    public String getAutId() {
+        return authorId;
+    }
+
+    public void setAutId(String id) {
+        this.authorId = id;
+    }
 
     public String getId() {
         return id;
@@ -44,7 +53,8 @@ public class Message implements Serializable {
     @Override
     public String toString() {
         return "Message{" +
-                "id='" + id + '\'' +
+                "authorId ='"+authorId+'\''+
+                ", id='" + id + '\'' +
                 ", author='" + author + '\'' +
                 ", timestamp=" + timestamp +
                 ", text='" + text + '\'' +
