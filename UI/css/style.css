@@ -76,7 +76,8 @@ html, body {
     border: 2px solid #060101;
     border-radius: 4px;
     font-family: 'Open Sans';
-    overflow: auto;
+    overflow:scroll; 
+    /*auto;*/
     background-color: white ;
 }
 .my-button{
@@ -276,7 +277,8 @@ textarea {
     padding: 4px 6px;
     font-size: 14px;
     line-height: 20px;
-    color: #bbc4d5;
+    color: black;
+    /*#bbc4d5;*/
     border: 1px solid #151515;
     background-color: white ;
     border-radius: 4px;

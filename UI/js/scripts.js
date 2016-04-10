@@ -52,6 +52,8 @@ function run(){
     var chat  = document.getElementById('textbox');
     chat.addEventListener('click', delegateEvent);
 
+
+
 }
 
 
@@ -153,9 +155,8 @@ function loadMessages(render) {
         messagesList = response.messages;
         //Application.taskList = response.tasks;       
         render();
+        document.getElementById('textbox').scrollTop = 9999;
     });
-
-
 }
 //------------------------------------------------------------------
 function ajax(method, url, data, continueWith, continueWithError) {
@@ -492,16 +493,40 @@ function onDelButtonClick(){
             break;
         }
     }
-    var elem = newMessage("пользователь " + curAut.name + "удалил сообщение "  , "system", uniqueId() );
-    messagesList[ind] = elem;
-    var items = document.getElementsByClassName('messagesList')[0];
-    var element = elementMessageFromTemplateSys();
-    renderMessageState(element, elem);
-    items.replaceChild(element , el.parentElement);
+    var url = Application.mainUrl + '?msgId=' + _id;
+    var elem = newMessage("пользователь " + curAut.name + " удалил сообщение "  , "system", 1 );
+    ajax('DELETE', url, JSON.stringify(elem), function(responseText){
+        //var response = JSON.parse(responseText);
 
-    saveMessages(messagesList);
+        //Application.token = response.token;
+        //messagesList = response.messages;
+        //Application.taskList = response.tasks;       
+       // render();
+        //document.getElementById('textbox').scrollTop = 9999;
+        
+        //saveMessages(messagesList);        
+        messagesList[ind] = elem;
+        var items = document.getElementsByClassName('messagesList')[0];
+        var element = elementMessageFromTemplateSys();
+        renderMessageState(element, elem);
+        items.replaceChild(element , el.parentElement);
+    });
+    // var elem = newMessage("пользователь " + curAut.name + "удалил сообщение "  , "system", uniqueId() );
+    // messagesList[ind] = elem;
+    // var items = document.getElementsByClassName('messagesList')[0];
+    // var element = elementMessageFromTemplateSys();
+    // renderMessageState(element, elem);
+    // items.replaceChild(element , el.parentElement);
 
 }
+// function deleteMessage(index){
+//     var elem = newMessage("пользователь " + curAut.name + "удалил сообщение "  , "system", uniqueId() );
+//     messagesList[ind] = elem;
+//     var items = document.getElementsByClassName('messagesList')[0];
+//     var element = elementMessageFromTemplateSys();
+//     renderMessageState(element, elem);
+//     items.replaceChild(element , el.parentElement);
+// }
 
 function onEditButtonClick(){
 	var editbox = document.getElementById('editbox');

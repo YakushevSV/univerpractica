@@ -32,6 +32,7 @@ public interface MessageStorage {
      * @return true if message was deleted successfully and false otherwise
      */
     boolean removeMessage(String messageId);
+    boolean replaceMessage(String messageId,Message newmsg);
 
 
     /**

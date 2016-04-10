@@ -130,8 +130,10 @@ public class ServerHandler implements HttpHandler {
             return Response.badRequest("Token query parameter is required");
         }
         try {
+            Message message = MessageHelper.getDelMessage(httpExchange.getRequestBody());
             String id = token;
-            if(!messageStorage.removeMessage(id)){
+//            if(!messageStorage.removeMessage(id)){
+            if(!messageStorage.replaceMessage(id, message)){
                 return Response.badRequest(
                         String.format("Incorrect token in request: %s. Server does not have message with such id", id));
             }
@@ -140,6 +142,9 @@ public class ServerHandler implements HttpHandler {
             //return Response.gone();
         } catch (InvalidTokenException e) {
             return Response.badRequest(e.getMessage());
+        }catch (ParseException e) {
+            logger.error("Could not parse message.", e);
+            return new Response(Constants.RESPONSE_CODE_BAD_REQUEST, "Incorrect request body");
         }
     }
 

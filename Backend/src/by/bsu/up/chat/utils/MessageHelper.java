@@ -126,6 +126,21 @@ public class MessageHelper  {
         message.setText(text);
         return message;
     }
+    public static Message getDelMessage(InputStream inputStream) throws ParseException {
+        JSONObject jsonObject = stringToJsonObject(inputStreamToString(inputStream));
+       // String autId = ((String) jsonObject.get(Constants.Message.FIELD_AUTHOR_ID));
+        String id = ((String) jsonObject.get(Constants.Message.FIELD_ID));
+        String author = ((String) jsonObject.get(Constants.Message.FIELD_AUTHOR));
+        long timestamp = ((long) jsonObject.get(Constants.Message.FIELD_TIMESTAMP));
+        String text = ((String) jsonObject.get(Constants.Message.FIELD_TEXT));
+        Message message = new Message();
+        message.setId(id);
+       // message.setAutId(autId);
+        message.setAuthor(author);
+        message.setTimestamp(timestamp);
+        message.setText(text);
+        return message;
+    }
     public static Message getEditMessage(InputStream inputStream)throws ParseException{
         JSONObject jsonObject = stringToJsonObject(inputStreamToString(inputStream));
         String id = ((String) jsonObject.get(Constants.Message.FIELD_ID));

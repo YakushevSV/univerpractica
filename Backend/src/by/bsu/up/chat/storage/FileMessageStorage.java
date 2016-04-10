@@ -111,6 +111,22 @@ public class FileMessageStorage implements MessageStorage {
         }
         return true;
     }
+    public synchronized boolean replaceMessage(String messageId, Message newmsg) {
+        int index = contains(messageId);
+        if(index == -1)
+            return  false;
+        //messages.remove(index);
+        messages.set(index, newmsg);
+        try{
+            FileWriter fw = new FileWriter(DEFAULT_PERSISTENCE_FILE);
+            Gson gson = new Gson();
+            fw.write(gson.toJson(messages));
+            fw.close();
+        }catch (IOException e){
+            return false;
+        }
+        return true;
+    }
     public int contains(String str){
         for (int i = 0; i < messages.size(); i++){
             if(messages.get(i).getId().equals(str)){
