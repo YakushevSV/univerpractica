@@ -3,6 +3,7 @@ package by.bsu.up.chat.server;
 import by.bsu.up.chat.Constants;
 import by.bsu.up.chat.InvalidTokenException;
 import by.bsu.up.chat.common.models.Message;
+import by.bsu.up.chat.common.models.User;
 import by.bsu.up.chat.logging.Logger;
 import by.bsu.up.chat.logging.impl.Log;
 import by.bsu.up.chat.storage.FileMessageStorage;
@@ -71,6 +72,11 @@ public class ServerHandler implements HttpHandler {
         if (query == null) {
             return Response.badRequest("Absent query in request");
         }
+        if (query.equals("users")) {
+            List<User> users = messageStorage.getUsers();
+            String responseBody = MessageHelper.buildServerResponseBodyUsers(users, messageStorage.userCounter());
+            return Response.ok(responseBody);
+        }
         Map<String, String> map = queryToMap(query);
         String token = map.get(Constants.REQUEST_PARAM_TOKEN);
         if (StringUtils.isEmpty(token)) {
@@ -92,7 +98,15 @@ public class ServerHandler implements HttpHandler {
     }
 
     private Response doPost(HttpExchange httpExchange) {
+        String query = httpExchange.getRequestURI().getQuery();
+
         try {
+            if(query.equals("users")){
+                User user = MessageHelper.getNewUser(httpExchange.getRequestBody());
+                logger.info(String.format("Received new message from user: %s", user));
+                messageStorage.addUser(user);
+                return Response.ok();
+            }
             Message message = MessageHelper.getClientMessage(httpExchange.getRequestBody());
             logger.info(String.format("Received new message from user: %s", message));
             messageStorage.addMessage(message);

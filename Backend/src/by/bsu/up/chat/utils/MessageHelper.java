@@ -3,6 +3,7 @@ package by.bsu.up.chat.utils;
 import by.bsu.up.chat.Constants;
 import by.bsu.up.chat.InvalidTokenException;
 import by.bsu.up.chat.common.models.Message;
+import by.bsu.up.chat.common.models.User;
 import by.bsu.up.chat.logging.Logger;
 import by.bsu.up.chat.logging.impl.Log;
 import jdk.nashorn.internal.ir.debug.JSONWriter;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 public class MessageHelper  {
 
     public static final String MESSAGE_PART_ALL_MSG = "messages";
+    public static final String USER_PART_ALL_MSG = "users";
     public static final String MESSAGE_PART_SINGLE_MSG = "message";
     public static final String MESSAGE_PART_TOKEN = "token";
     public static final String TOKEN_TEMPLATE = "TN%dEN";
@@ -84,6 +86,12 @@ public class MessageHelper  {
         jsonObject.put(MESSAGE_PART_TOKEN, buildToken(lastPosition));
         return jsonObject.toJSONString();
     }
+    public static String buildServerResponseBodyUsers(List<User> users, int lastPosition) {
+        JSONArray array = getJsonArrayOfUsers(users);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(USER_PART_ALL_MSG, array);
+        return jsonObject.toJSONString();
+    }
 
     private static JSONArray getJsonArrayOfMessages(List<Message> messages) {
 
@@ -97,6 +105,24 @@ public class MessageHelper  {
         List<JSONObject> jsonMessages = new LinkedList<>();
         for (Message message : messages) {
             jsonMessages.add(messageToJSONObject(message));
+        }
+
+        JSONArray array = new JSONArray();
+        array.addAll(jsonMessages);
+        return array;
+    }
+    private static JSONArray getJsonArrayOfUsers(List<User> users) {
+
+        // Java * approach
+        /*
+            List<JSONObject> jsonMessages = messages.stream()
+                    .map(MessageHelper::messageToJSONObject)
+                    .collect(Collectors.toList());
+        */
+
+        List<JSONObject> jsonMessages = new LinkedList<>();
+        for (User user : users) {
+            jsonMessages.add(userToJSONObject(user));
         }
 
         JSONArray array = new JSONArray();
@@ -155,6 +181,17 @@ public class MessageHelper  {
         return message;
     }
 
+    public static User getNewUser(InputStream inputStream) throws ParseException {
+        JSONObject jsonObject = stringToJsonObject(inputStreamToString(inputStream));
+        String name = ((String) jsonObject.get(Constants.User.FIELD_NAME));
+        String id = ((String) jsonObject.get(Constants.User.FIELD_ID));
+        User user = new User();
+        user.setId(id);
+        user.setName(name);
+        user.setIsOnline(true);
+        return user;
+    }
+
     public static JSONObject stringToJsonObject(String json) throws ParseException {
         // The same as (JSONObject) jsonParser.parse(json.trim());
         return JSONObject.class.cast(jsonParser.parse(json.trim()));
@@ -181,6 +218,14 @@ public class MessageHelper  {
         jsonObject.put(Constants.Message.FIELD_AUTHOR, message.getAuthor());
         jsonObject.put(Constants.Message.FIELD_TIMESTAMP, message.getTimestamp());
         jsonObject.put(Constants.Message.FIELD_TEXT, message.getText());
+        return jsonObject;
+    }
+    private static JSONObject userToJSONObject(User user) {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(Constants.Message.FIELD_ID, user.getId());
+        jsonObject.put(Constants.User.FIELD_NAME, user.getName());
+        jsonObject.put(Constants.User.FIELD_ISONLINE, user.isOnline());
+
         return jsonObject;
     }
 }

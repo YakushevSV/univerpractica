@@ -2,6 +2,7 @@ package by.bsu.up.chat.storage;
 
 
 import by.bsu.up.chat.common.models.Message;
+import by.bsu.up.chat.common.models.User;
 import by.bsu.up.chat.logging.Logger;
 import by.bsu.up.chat.logging.impl.Log;
 import com.google.gson.Gson;
@@ -17,10 +18,12 @@ import java.util.*;
 
 public class FileMessageStorage implements MessageStorage {
     private static final String DEFAULT_PERSISTENCE_FILE = "messages.srg";
+    private static final String DEFAULT_PERSISTENCE_FILE_USERS = "users.srg";
 
     private static final Logger logger = Log.create(InMemoryMessageStorage.class);
 
     private List<Message> messages = new ArrayList<>();
+    private List<User> users = new ArrayList<>();
 
 
     public FileMessageStorage(){
@@ -34,6 +37,15 @@ public class FileMessageStorage implements MessageStorage {
                     sb.append(sc.nextLine());
                 }
                 messages = gson.fromJson(sb.toString(),collectionType);
+            }
+
+            sc = new Scanner(new File(DEFAULT_PERSISTENCE_FILE_USERS));
+            if(sc.hasNext()){
+                StringBuilder sb=new StringBuilder(sc.nextLine());
+                while (sc.hasNextLine()){
+                    sb.append(sc.nextLine());
+                }
+                users = gson.fromJson(sb.toString(),collectionType);
             }
 
 
@@ -62,7 +74,7 @@ public class FileMessageStorage implements MessageStorage {
     }
 
     @Override
-    public void addMessage(Message message) {
+    public synchronized void addMessage(Message message) {
         messages.add(message);
         try{
             FileWriter fw = new FileWriter(DEFAULT_PERSISTENCE_FILE);
@@ -150,5 +162,21 @@ public class FileMessageStorage implements MessageStorage {
     @Override
     public int size() {
         return messages.size();
+    }
+
+    public synchronized List<User> getUsers() {
+        //int from = portion.getFromIndex();
+        //if (from < 0) {
+        //    throw new IllegalArgumentException(String.format("Portion from index %d can not be less then 0", from));
+       // }
+        //int to = portion.getToIndex();
+        //if (to != -1 && to < portion.getFromIndex()) {
+       //     throw new IllegalArgumentException(String.format("Porting last index %d can not be less then start index %d", to, from));
+       // }
+        //to = Math.max(to, messages.size());
+        return users;
+    }
+    public int userCounter() {
+        return users.size();
     }
 }

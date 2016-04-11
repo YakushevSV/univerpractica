@@ -1,6 +1,7 @@
 package by.bsu.up.chat.storage;
 
 import by.bsu.up.chat.common.models.Message;
+import by.bsu.up.chat.common.models.User;
 
 import java.io.IOException;
 import java.util.List;
@@ -39,6 +40,7 @@ public interface MessageStorage {
      * @return the amount of stored messages
      */
     int size();
-
+    int userCounter();
+    List<User> getUsers();
 
 }

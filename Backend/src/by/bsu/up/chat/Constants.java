@@ -37,4 +37,9 @@ public interface Constants {
         String FIELD_TIMESTAMP = "timestamp";
         String FIELD_TEXT = "text";
     }
+    interface User {
+        String FIELD_ID = "id";
+        String FIELD_NAME = "name";
+        String FIELD_ISONLINE = "isonline";
+    }
 }

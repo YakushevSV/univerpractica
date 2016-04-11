@@ -68,10 +68,16 @@ public class Launcher {
             logger.info(String.format("Send message: " +
                     "POST http://%s:%d%s provide body json in format {\"id\" : \"1\", \"author\":\"User1\", \"text\":\"Hello, all!\", \"timestamp\":1459169330000}",
                     serverHost, port, Constants.CONTEXT_PATH));
+            logger.info(String.format("add user: " +
+                            "POST http://%s:%d%s?users provide body json in format {\"id\" : \"1\", \"author\":\"User1\", \"text\":\"Hello, all!\", \"timestamp\":1459169330000}",
+                    serverHost, port, Constants.CONTEXT_PATH));
             logger.info(String.format("Delete message: " +
                     "DELETE http://%s:%d%s?msgId={id}", serverHost, port, Constants.CONTEXT_PATH));
             logger.info(String.format("Edit message: " +
-                    "PUT http://%s:%d%s provide body json in format {\"id\" : \"1\", \"text\":\"Hi ! What’s up ?\"}",
+                    "GET http://%s:%d%s?users",
+                    serverHost, port, Constants.CONTEXT_PATH));
+            logger.info(String.format("List of users: " +
+                            "PUT http://%s:%d%s provide body json in format {\"id\" : \"1\", \"text\":\"Hi ! What’s up ?\"}",
                     serverHost, port, Constants.CONTEXT_PATH));
 
             server.createContext(Constants.CONTEXT_PATH, new ServerHandler());

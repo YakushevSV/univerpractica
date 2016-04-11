@@ -1,14 +1,15 @@
 package by.bsu.up.chat.storage;
 
 import by.bsu.up.chat.common.models.Message;
+import by.bsu.up.chat.common.models.User;
 import by.bsu.up.chat.logging.Logger;
 import by.bsu.up.chat.logging.impl.Log;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class InMemoryMessageStorage implements MessageStorage {
+
 
     private static final String DEFAULT_PERSISTENCE_FILE = "messages.srg";
 
@@ -52,5 +53,14 @@ public class InMemoryMessageStorage implements MessageStorage {
     @Override
     public int size() {
         return messages.size();
+    }
+
+    @Override
+    public synchronized List<User> getUsers() {
+        return null;
+    }
+    @Override
+    public int userCounter() {
+        return 0;
     }
 }
