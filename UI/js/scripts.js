@@ -51,9 +51,6 @@ function run(){
 
     var chat  = document.getElementById('textbox');
     chat.addEventListener('click', delegateEvent);
-
-
-
 }
 
 
@@ -67,9 +64,10 @@ function onSendButtonClick(){
         ajax('POST', Application.mainUrl, JSON.stringify(newMsg), function(){
            // Application.taskList.push(task);
             messagesList.push(newMsg);
-            renderMessages([newMsg]);
+        renderMessages([newMsg]);
             //done();
         });
+        
         // renderMessages([newMsg]);
         // saveMessages(messagesList);
 
@@ -494,7 +492,7 @@ function onDelButtonClick(){
         }
     }
     var url = Application.mainUrl + '?msgId=' + _id;
-    var elem = newMessage("пользователь " + curAut.name + " удалил сообщение "  , "system", 1 );
+    var elem = newMessage("user " + curAut.name + " remove message "  , "system", 1 );
     ajax('DELETE', url, JSON.stringify(elem), function(responseText){
         //var response = JSON.parse(responseText);
 
@@ -550,6 +548,10 @@ function onOkButtonClick(){
             }
 
         }
+        var mesToSend = {
+            id:messagesList[ind].id,
+            text:txtarea.value
+        };
         messagesList[ind].text = txtarea.value;
         var elem = newMessage("пользователь " + curAut.name + " изменил сообщение "  , "system", uniqueId() );
         var tmpel1 = elem;
@@ -565,8 +567,11 @@ function onOkButtonClick(){
         var element = elementMessageFromTemplateSys();
         renderMessageState(element, elem);
         items.insertBefore(element, items.childNodes[ind + 1]);
-
-        saveMessages(messagesList);
+        ajax('PUT', Application.mainUrl, JSON.stringify(mesToSend), function(){
+            // task.done = !task.done;
+            // done();
+        });
+        //saveMessages(messagesList);
     	}
 	var editbox = document.getElementById('editbox');
 	editbox.style.display = "none";

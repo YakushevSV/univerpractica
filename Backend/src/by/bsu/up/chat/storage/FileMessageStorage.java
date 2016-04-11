@@ -12,10 +12,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 
 public class FileMessageStorage implements MessageStorage {
@@ -84,6 +81,12 @@ public class FileMessageStorage implements MessageStorage {
         if(index == -1)
             return  false;
         messages.get(index).setText(message.getText());
+        Message mesToAdd = new Message();
+        mesToAdd.setText("user "+messages.get(index).getAuthor() + " change message ");
+        mesToAdd.setAuthor("system");
+        UUID uuid = UUID.randomUUID();
+        mesToAdd.setId(uuid.toString());
+        messages.add(index,mesToAdd);
         try{
             FileWriter fw = new FileWriter(DEFAULT_PERSISTENCE_FILE);
             Gson gson = new Gson();
@@ -94,6 +97,14 @@ public class FileMessageStorage implements MessageStorage {
         }
         return true;
     }
+
+//    String uniqueId() {
+//        UUID uuid = UUID.randomUUID();
+//
+//        //var random = Math.random() * Math.random();
+//
+//        return Math.floor(date * random);
+//    }
 
     @Override
     public synchronized boolean removeMessage(String messageId) {
