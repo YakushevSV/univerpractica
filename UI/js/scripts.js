@@ -14,6 +14,8 @@ var Application = {
 var messagesList = [];
 
 
+var isConnected = void 0;
+
 function run(){
 
 	var button_del = document.getElementById('btn-del');
@@ -55,10 +57,57 @@ function run(){
     //usersList = [newUser('user', false)];
     loadUsers();
     //renderMessages(messagesList);
+    Connect();
 }
 
+function Connect() {
+    if(isConnected)
+        return;
+
+    function whileConnected() {
+        isConnected = setTimeout(function () {
+            // ajax('GET', Application.mainUrl, ,function (serverResponse) {
+            //     if (isConnected) {
+            //         setOutput(serverResponse);
+            //         whileConnected();
+            //     }
+            // });
 
 
+            ajax('GET', Application.mainUrl+ '?token=TN11EN', null, function(responseText){
+                var response = JSON.parse(responseText);
+                var items = document.getElementsByClassName('messagesList')[0];
+                // items.splice(0,items.childElementCount);
+                var count = items.childElementCount;
+                for(var i = 0 ; i< count; i++){
+                    var elem = items.children[0];
+                    elem.remove();
+                    // items.removeChild();
+                }
+                
+
+                var span = document.getElementById('server_state_checker');
+                span.innerText = "online";
+                Application.token = response.token;
+                messagesList = response.messages;
+                //Application.taskList = response.tasks;       
+                renderMessages(messagesList);
+                document.getElementById('textbox').scrollTop = 9999;
+                if (isConnected) {
+                   // setOutput(serverResponse);
+                    whileConnected();
+                }
+            });
+
+        }, seconds(5));
+    }
+
+    whileConnected();
+}
+function seconds(value) {
+    return Math.round(value * 1000);
+}
+//--------------------------------------------------------------------------------------
 function onSendButtonClick(){
 
     var msg_text = document.getElementById('msgarea');
@@ -170,6 +219,8 @@ function ajax(method, url, data, continueWith, continueWithError) {
             return;
 
         if(xhr.status != 200) {
+            var span = document.getElementById('server_state_checker');
+            span.innerText = "offline";
             continueWithError('Error on the server side, response ' + xhr.status);
             return;
         }
@@ -187,6 +238,10 @@ function ajax(method, url, data, continueWith, continueWithError) {
     };
 
     xhr.onerror = function (e) {
+        
+        var span = document.getElementById('server_state_checker');
+        span.innerText = "offline";
+        
         var errMsg = 'Server connection error !\n'+
         '\n' +
         'Check if \n'+
@@ -626,3 +681,4 @@ function onOkButtonClick(){
 	document.getElementById('btn-del').style.background = "";
 	document.getElementById('btn-edit').style.background = "";
 }
+//----------------------------------------------------------------------
