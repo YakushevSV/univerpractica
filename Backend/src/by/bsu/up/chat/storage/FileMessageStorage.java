@@ -29,6 +29,7 @@ public class FileMessageStorage implements MessageStorage {
     public FileMessageStorage(){
         Gson gson = new Gson();
         Type collectionType = new TypeToken<Collection<Message>>(){}.getType();
+        Type collectionType1 = new TypeToken<Collection<User>>(){}.getType();
         try{
             Scanner sc = new Scanner(new File(DEFAULT_PERSISTENCE_FILE));
             if(sc.hasNext()){
@@ -45,7 +46,7 @@ public class FileMessageStorage implements MessageStorage {
                 while (sc.hasNextLine()){
                     sb.append(sc.nextLine());
                 }
-                users = gson.fromJson(sb.toString(),collectionType);
+                users = gson.fromJson(sb.toString(),collectionType1);
             }
 
 
@@ -178,5 +179,50 @@ public class FileMessageStorage implements MessageStorage {
     }
     public int userCounter() {
         return users.size();
+    }
+
+    @Override
+    public boolean updateUser(User user) {
+        int index = isunique(user);
+        if(index != -1){
+            users.get(index).setName(user.getName());
+            try{
+                FileWriter fw = new FileWriter(DEFAULT_PERSISTENCE_FILE_USERS);
+                Gson gson = new Gson();
+                fw.write(gson.toJson(users));
+                fw.close();
+                return true;
+            }catch (IOException e){
+                return false;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void addUser(User user) {
+        int index = isunique(user);
+        if(index == -1){
+            users.add(user);
+        }else{
+            boolean f= users.get(index).isOnline();
+            users.get(index).setIsOnline(!f);
+        }
+        try{
+            FileWriter fw = new FileWriter(DEFAULT_PERSISTENCE_FILE_USERS);
+            Gson gson = new Gson();
+            fw.write(gson.toJson(users));
+            fw.close();
+        }catch (IOException e){
+            return;
+        }
+    }
+    int isunique(User user){
+        for (int i = 0; i < users.size(); i++){
+            if(users.get(i).getId().equals(user.getId())){
+                return i;
+            }
+        }
+        return -1;
     }
 }

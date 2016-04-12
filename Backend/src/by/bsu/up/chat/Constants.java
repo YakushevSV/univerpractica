@@ -27,12 +27,13 @@ public interface Constants {
     String REQUEST_PARAMS_DELIMITER = "&";
     String REQUEST_PARAM_TOKEN = "token";
     String REQUEST_PARAM_MESSAGE_ID = "msgId";
+    String REQUEST_PARAM_USER_RESPONCE = "users";
 
     int MESSAGE_FLUSH_TARIGGER = 3;
 
     interface Message {
         String FIELD_ID = "id";
-        String FIELD_AUTHOR_ID = "authorId";
+        String FIELD_AUTHOR_ID = "authorId";//authorId
         String FIELD_AUTHOR = "author";
         String FIELD_TIMESTAMP = "timestamp";
         String FIELD_TEXT = "text";

@@ -52,6 +52,7 @@ function run(){
     chat.addEventListener('click', delegateEvent);
 
     loadMessages(function(){renderMessages(messagesList)});
+    //usersList = [newUser('user', false)];
     loadUsers();
     //renderMessages(messagesList);
 }
@@ -270,16 +271,27 @@ function onRenameButtonClick(){
             }
 
         var newMsg = newMessage("пользователь " + curAut.name + " изменил имя на " + text.value  , "system", uniqueId() );
+        newMsg.authorId+='';
+        ajax('POST', Application.mainUrl, JSON.stringify(newMsg), function(responseText){
+           // Application.taskList.push(task);
+           // messagesList.push(newMsg);
+            //renderMessages([newMsg]);
+            //done();
+        });
         messagesList.push(newMsg);
         renderMessages([newMsg]);
         saveMessages(messagesList);
 
         curAut.name = text.value;
+
+        var url = Application.mainUrl + '?users=update';
+        ajax('POST', url, JSON.stringify(curAut), function(){});
+
         usersList[index].name = text.value;
     }
 
     saveCur(curAut);
-    saveUsers(usersList);
+   // saveUsers(usersList);
 
 }
 function loadCur(){
@@ -314,24 +326,35 @@ function onLogButtonClick(element){
 
         var flag = false;
         var ind = -1;
-        for(var i = 0; i < usersList.length; i++ ){
+        if(usersList != undefined){
+            for(var i = 0; i < usersList.length; i++ ){
             if(usersList[i].name == text.value){
                 flag=true;
                 ind = i;
                  break;
             }
         }
+        }
+        
 
         if(flag){
             usersList[ind].me= true;
             curAut = newUser(text.value, true);;
             curAut.id = usersList[ind].id;
-            renderLocalStorage(usersList);
+
+            var url = Application.mainUrl + '?users=add';
+            ajax('POST', url, JSON.stringify(curAut), function(){
+            // task.done = !task.done;
+            // done();
+            });
+            // renderLocalStorage(usersList);
         }else{
             var newUsr = newUser(text.value, true);
             usersList.push(newUsr);
             renderUsers([newUsr]);
             curAut = newUsr;
+            var url = Application.mainUrl + '?users=add';
+            ajax('POST', url, JSON.stringify(newUsr), function(){});
         }
         //saveUsers(usersList);
 
@@ -339,16 +362,23 @@ function onLogButtonClick(element){
         saveCur(curAut);
     } else{
         var index = -1;
-        for(var i = 0; i < usersList.length; i++ ){
+        if(usersList != undefined){
+            for(var i = 0; i < usersList.length; i++ ){
               if(usersList[i].name == curAut.name){
                 index = i;
                 break;
             }
         }
+        }
+        
+        var url = Application.mainUrl + '?users=add';
+        ajax('POST', url, JSON.stringify(curAut), function(){});
+
         curAut = null;
         usersList[index].me = false;
-        renderLocalStorage(usersList);
-        saveUsers(usersList);
+        //renderLocalStorage(usersList);
+      //  saveUsers(usersList);
+
         saveCur(curAut);
     }
 }
@@ -414,9 +444,11 @@ function loadUsers() {
     var url = Application.mainUrl + '?users';
 
     ajax('GET', url, null, function(responseText){
-        var response = JSON.parse(responseText);
-
-        usersList = response.messages;
+        //if(responseText != "{\"users\":[]}"){
+        var response = JSON.parse(responseText);                  
+            //messagesList = response.messages;
+        usersList = response.users;
+        //}
         //Application.taskList = response.tasks;       
         //render();
         // document.getElementById('textbox').scrollTop = 9999;

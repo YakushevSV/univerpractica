@@ -63,4 +63,14 @@ public class InMemoryMessageStorage implements MessageStorage {
     public int userCounter() {
         return 0;
     }
+
+    @Override
+    public void addUser(User user) {
+
+    }
+
+    @Override
+    public boolean updateUser(User user) {
+        return false;
+    }
 }

@@ -42,5 +42,7 @@ public interface MessageStorage {
     int size();
     int userCounter();
     List<User> getUsers();
+    void addUser(User user);
+    boolean updateUser(User user);
 
 }

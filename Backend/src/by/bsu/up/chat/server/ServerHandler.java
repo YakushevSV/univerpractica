@@ -101,11 +101,21 @@ public class ServerHandler implements HttpHandler {
         String query = httpExchange.getRequestURI().getQuery();
 
         try {
-            if(query.equals("users")){
-                User user = MessageHelper.getNewUser(httpExchange.getRequestBody());
-                logger.info(String.format("Received new message from user: %s", user));
-                messageStorage.addUser(user);
-                return Response.ok();
+            if(query!= null&&query.contains("users")){
+                Map<String, String> map = queryToMap(query);
+                String token = map.get(Constants.REQUEST_PARAM_USER_RESPONCE);
+                if(token.equals("add")){
+                    User user = MessageHelper.getNewUser(httpExchange.getRequestBody());
+                    logger.info(String.format("new user : %s", user));
+                    messageStorage.addUser(user);
+                    return Response.ok();
+                }else if(token.equals("update")){
+                    User user = MessageHelper.getNewUser(httpExchange.getRequestBody());
+                    logger.info(String.format("user edit profile : %s", user));
+                    messageStorage.updateUser(user);
+                    return Response.ok();
+                }
+
             }
             Message message = MessageHelper.getClientMessage(httpExchange.getRequestBody());
             logger.info(String.format("Received new message from user: %s", message));
