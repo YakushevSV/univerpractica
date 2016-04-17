@@ -56,7 +56,8 @@ html, body {
     padding: 4px 6px;
     font-size: 14px;
     line-height: 20px;
-    color: #bbc4d5;
+    /*color: #bbc4d5;*/
+    color: black;
     width: 45%;
     border: 1px solid #151515;
     background-color: white ;
@@ -171,7 +172,8 @@ html, body {
 }
 
 .label-success {
-    background-color: #805cb7;
+    /*background-color: #805cb7;*/
+    background-color: #00CD00;
 }
 
 .label-danger {

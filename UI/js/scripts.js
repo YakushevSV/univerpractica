@@ -27,10 +27,6 @@ function run(){
 	var btnLog = document.getElementById('logging');
 
     btnLog.addEventListener('click',onLogButtonClick);
-    // usersList = loadUsers() || [
-    //         newUser('User', false),
-    //         newUser('User2', false)
-    //     ];
     curAut = loadCur()||null;
 
     renderUsers(usersList);
@@ -40,13 +36,6 @@ function run(){
     var btnSend = document.getElementById('sendingmsg');
     btnSend.addEventListener('click', onSendButtonClick);
 
-    // messagesList = loadMessages() || [
-    //         newMessage('Hello to all','User 21: 16: 12', usersList[0].id),
-    //         newMessage('Hello','User2 21: 32: 15', usersList[1].id)
-    //     ];
-   // messagesList = loadMessages();
-    
-
     var button_rename = document.getElementById('rename');
     button_rename.addEventListener("click", onRenameButtonClick);
 
@@ -54,9 +43,7 @@ function run(){
     chat.addEventListener('click', delegateEvent);
 
     loadMessages(function(){renderMessages(messagesList)});
-    //usersList = [newUser('user', false)];
     loadUsers();
-    //renderMessages(messagesList);
     Connect();
 }
 
@@ -66,35 +53,28 @@ function Connect() {
 
     function whileConnected() {
         isConnected = setTimeout(function () {
-            // ajax('GET', Application.mainUrl, ,function (serverResponse) {
-            //     if (isConnected) {
-            //         setOutput(serverResponse);
-            //         whileConnected();
-            //     }
-            // });
-
 
             ajax('GET', Application.mainUrl+ '?token=TN11EN', null, function(responseText){
                 var response = JSON.parse(responseText);
                 var items = document.getElementsByClassName('messagesList')[0];
-                // items.splice(0,items.childElementCount);
                 var count = items.childElementCount;
                 for(var i = 0 ; i< count; i++){
                     var elem = items.children[0];
                     elem.remove();
-                    // items.removeChild();
                 }
                 
 
-                var span = document.getElementById('server_state_checker');
-                span.innerText = "online";
+                var span = document.getElementById('server_state_checker_on');
+                span.style.display = "inline";
+
+                var span1 = document.getElementById('server_state_checker_off');
+                span1.style.display = "none";
+
                 Application.token = response.token;
-                messagesList = response.messages;
-                //Application.taskList = response.tasks;       
+                messagesList = response.messages;    
                 renderMessages(messagesList);
                 document.getElementById('textbox').scrollTop = 9999;
                 if (isConnected) {
-                   // setOutput(serverResponse);
                     whileConnected();
                 }
             });
@@ -113,17 +93,10 @@ function onSendButtonClick(){
     var msg_text = document.getElementById('msgarea');
     if (msg_text.value && !f){
         var newMsg = newMessage(msg_text.value, curAut.name, curAut.id );
-        //messagesList.push(newMsg);
         ajax('POST', Application.mainUrl, JSON.stringify(newMsg), function(responseText){
-           // Application.taskList.push(task);
             messagesList.push(newMsg);
             renderMessages([newMsg]);
-            //done();
         });
-        // renderMessages([newMsg]);
-        // saveMessages(messagesList);
-
-        //msg_text.value = '';
     }
 
 }
@@ -148,7 +121,6 @@ function renderMessages(messages) {
                 renderMessage(messages[i], 1);
             }
     } 
-    //renderLocalStorageMess(messagesList);
 }
 function renderLocalStorageMess(value){
     var output = document.getElementById('outputm');
@@ -165,7 +137,6 @@ function renderMessage(msg, f){
         var element = elementMessageFromTemplateSys();
 
     }
-
 
     renderMessageState(element, msg);
     items.appendChild(element);
@@ -186,23 +157,13 @@ function elementMessageFromTemplateSys() {
     return template.firstElementChild.cloneNode(true);
 }
 function loadMessages(render) {
-    // if(typeof(Storage) == "undefined") {
-    //     alert('localStorage is not accessible');
-    //     return;
-    // }
-
-    // var item = localStorage.getItem("Messages List");
-
-    // return item && JSON.parse(item);
-
     var url = Application.mainUrl + '?token=' + Application.token;
 
     ajax('GET', url, null, function(responseText){
         var response = JSON.parse(responseText);
 
         Application.token = response.token;
-        messagesList = response.messages;
-        //Application.taskList = response.tasks;       
+        messagesList = response.messages;   
         render();
         document.getElementById('textbox').scrollTop = 9999;
     });
@@ -219,9 +180,13 @@ function ajax(method, url, data, continueWith, continueWithError) {
             return;
 
         if(xhr.status != 200) {
-            var span = document.getElementById('server_state_checker');
-            span.innerText = "offline";
+            var span = document.getElementById('server_state_checker_off');
+            span.style.display = "inline";
+            var span1 = document.getElementById('server_state_checker_on');
+            span1.style.display = "none";
+
             continueWithError('Error on the server side, response ' + xhr.status);
+            //Connect();
             return;
         }
 
@@ -239,9 +204,15 @@ function ajax(method, url, data, continueWith, continueWithError) {
 
     xhr.onerror = function (e) {
         
-        var span = document.getElementById('server_state_checker');
-        span.innerText = "offline";
+        //var span = document.getElementById('server_state_checker');
+        //span.innerText = "offline";
         
+        var span = document.getElementById('server_state_checker_off');
+        span.style.display = "inline";
+        var span1 = document.getElementById('server_state_checker_on');
+        span1.style.display = "none";
+
+
         var errMsg = 'Server connection error !\n'+
         '\n' +
         'Check if \n'+
@@ -256,14 +227,8 @@ function ajax(method, url, data, continueWith, continueWithError) {
 }
 function defaultErrorHandler(message) {
     console.error(message);
-    //output(message);
 }
 
-// function output(value){
-//     var output = document.getElementById('output');
-
-//     output.innerText = JSON.stringify(value, null, 2);
-// }
 
 function isError(text) {
     if(text == "")
@@ -312,7 +277,7 @@ function onRenameButtonClick(){
     for(var i = 0; i < usersList.length; i++ ){
         if(usersList[i].name == text.value){
             flag = false
-            alert("имя занято");
+            alert("this name is used");
             break;
         }
     }
@@ -325,13 +290,9 @@ function onRenameButtonClick(){
                 }
             }
 
-        var newMsg = newMessage("пользователь " + curAut.name + " изменил имя на " + text.value  , "system", uniqueId() );
+        var newMsg = newMessage("user " + curAut.name + " change name at " + text.value  , "system", uniqueId() );
         newMsg.authorId+='';
         ajax('POST', Application.mainUrl, JSON.stringify(newMsg), function(responseText){
-           // Application.taskList.push(task);
-           // messagesList.push(newMsg);
-            //renderMessages([newMsg]);
-            //done();
         });
         messagesList.push(newMsg);
         renderMessages([newMsg]);
@@ -346,7 +307,6 @@ function onRenameButtonClick(){
     }
 
     saveCur(curAut);
-   // saveUsers(usersList);
 
 }
 function loadCur(){
@@ -399,10 +359,7 @@ function onLogButtonClick(element){
 
             var url = Application.mainUrl + '?users=add';
             ajax('POST', url, JSON.stringify(curAut), function(){
-            // task.done = !task.done;
-            // done();
             });
-            // renderLocalStorage(usersList);
         }else{
             var newUsr = newUser(text.value, true);
             usersList.push(newUsr);
@@ -411,8 +368,6 @@ function onLogButtonClick(element){
             var url = Application.mainUrl + '?users=add';
             ajax('POST', url, JSON.stringify(newUsr), function(){});
         }
-        //saveUsers(usersList);
-
         text.value = '';
         saveCur(curAut);
     } else{
@@ -431,8 +386,6 @@ function onLogButtonClick(element){
 
         curAut = null;
         usersList[index].me = false;
-        //renderLocalStorage(usersList);
-      //  saveUsers(usersList);
 
         saveCur(curAut);
     }
@@ -488,25 +441,11 @@ function renderLocalStorage(value){
 	output.innerText = "localStorage:\n" + JSON.stringify(value, null, 2) + ";";
 }
 function loadUsers() {
-	// if(typeof(Storage) == "undefined") {
-	// 	alert('localStorage is not accessible');
-	// 	return;
-	// }
-
-	// var item = localStorage.getItem("Users List");
-
-	// return item && JSON.parse(item);
     var url = Application.mainUrl + '?users';
 
     ajax('GET', url, null, function(responseText){
-        //if(responseText != "{\"users\":[]}"){
-        var response = JSON.parse(responseText);                  
-            //messagesList = response.messages;
+        var response = JSON.parse(responseText);    
         usersList = response.users;
-        //}
-        //Application.taskList = response.tasks;       
-        //render();
-        // document.getElementById('textbox').scrollTop = 9999;
     });
 }
 function newUser(str, Me){
@@ -592,37 +531,13 @@ function onDelButtonClick(){
     var url = Application.mainUrl + '?msgId=' + _id;
     var elem = newMessage("user " + curAut.name + " remove message "  , "system", 1 );
     ajax('DELETE', url, JSON.stringify(elem), function(responseText){
-        //var response = JSON.parse(responseText);
-
-        //Application.token = response.token;
-        //messagesList = response.messages;
-        //Application.taskList = response.tasks;       
-       // render();
-        //document.getElementById('textbox').scrollTop = 9999;
-        
-        //saveMessages(messagesList);        
         messagesList[ind] = elem;
         var items = document.getElementsByClassName('messagesList')[0];
         var element = elementMessageFromTemplateSys();
         renderMessageState(element, elem);
         items.replaceChild(element , el.parentElement);
     });
-    // var elem = newMessage("пользователь " + curAut.name + "удалил сообщение "  , "system", uniqueId() );
-    // messagesList[ind] = elem;
-    // var items = document.getElementsByClassName('messagesList')[0];
-    // var element = elementMessageFromTemplateSys();
-    // renderMessageState(element, elem);
-    // items.replaceChild(element , el.parentElement);
-
 }
-// function deleteMessage(index){
-//     var elem = newMessage("пользователь " + curAut.name + "удалил сообщение "  , "system", uniqueId() );
-//     messagesList[ind] = elem;
-//     var items = document.getElementsByClassName('messagesList')[0];
-//     var element = elementMessageFromTemplateSys();
-//     renderMessageState(element, elem);
-//     items.replaceChild(element , el.parentElement);
-// }
 
 function onEditButtonClick(){
 	var editbox = document.getElementById('editbox');
@@ -651,7 +566,7 @@ function onOkButtonClick(){
             text:txtarea.value
         };
         messagesList[ind].text = txtarea.value;
-        var elem = newMessage("пользователь " + curAut.name + " изменил сообщение "  , "system", uniqueId() );
+        var elem = newMessage("user " + curAut.name + " change message "  , "system", uniqueId() );
         var tmpel1 = elem;
         var tmpel ;
         for(var i = ind; i<messagesList.length; i++){
@@ -666,10 +581,7 @@ function onOkButtonClick(){
         renderMessageState(element, elem);
         items.insertBefore(element, items.childNodes[ind + 1]);
         ajax('PUT', Application.mainUrl, JSON.stringify(mesToSend), function(){
-            // task.done = !task.done;
-            // done();
         });
-        //saveMessages(messagesList);
     	}
 	var editbox = document.getElementById('editbox');
 	editbox.style.display = "none";
