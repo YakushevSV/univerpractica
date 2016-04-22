@@ -51,7 +51,7 @@ public class FileMessageStorage implements MessageStorage {
 
 
         } catch (FileNotFoundException e){
-
+            logger.error("Could not find default messages or users storsge.", e);
         }
 
 
@@ -83,6 +83,7 @@ public class FileMessageStorage implements MessageStorage {
             fw.write(gson.toJson(messages));
             fw.close();
         }catch (IOException e){
+            logger.error("error while adding massage.", e);
             return;
         }
 
@@ -106,6 +107,7 @@ public class FileMessageStorage implements MessageStorage {
             fw.write(gson.toJson(messages));
             fw.close();
         }catch (IOException e){
+            logger.error("error while updating message.", e);
             return false;
         }
         return true;
@@ -131,6 +133,7 @@ public class FileMessageStorage implements MessageStorage {
             fw.write(gson.toJson(messages));
             fw.close();
         }catch (IOException e){
+            logger.error("Could not delete message.", e);
             return false;
         }
         return true;
@@ -147,6 +150,7 @@ public class FileMessageStorage implements MessageStorage {
             fw.write(gson.toJson(messages));
             fw.close();
         }catch (IOException e){
+            logger.error("error while changing message.", e);
             return false;
         }
         return true;
@@ -193,6 +197,7 @@ public class FileMessageStorage implements MessageStorage {
                 fw.close();
                 return true;
             }catch (IOException e){
+                logger.error("error while updating users.", e);
                 return false;
             }
         }
@@ -214,6 +219,7 @@ public class FileMessageStorage implements MessageStorage {
             fw.write(gson.toJson(users));
             fw.close();
         }catch (IOException e){
+            logger.error("Could not add user.", e);
             return;
         }
     }
