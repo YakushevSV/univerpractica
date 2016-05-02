@@ -2,6 +2,7 @@
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -46,14 +47,15 @@ public class MainServlet extends HttpServlet{
                     users = gson.fromJson(sb.toString(),collectionType);
                 }
                 if(users.contains(testing_user)){
-                    resp.sendRedirect(req.getContextPath() + "/login.html");
-                    // написать что такой юзер есть
+                    req.setAttribute("result", "user exist");
+                    RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/login.jsp");
+                    dispatcher.forward(req,resp);
                 }else{
                     users.add(testing_user);
                     FileWriter fw = new FileWriter(DEFAULT_USERS_STORAGE);
                     fw.write(gson.toJson(users));
                     fw.close();
-                    resp.sendRedirect(req.getContextPath() + "/homepage.html");// добавить передачу логина и пароля пользователя
+                    resp.sendRedirect(req.getContextPath() + "/homepage.html");
                 }
             } catch (FileNotFoundException e) {
                 FileWriter fw = new FileWriter(DEFAULT_USERS_STORAGE);
@@ -71,18 +73,28 @@ public class MainServlet extends HttpServlet{
                     users = gson.fromJson(sb.toString(),collectionType);
                 }
                 if(users.contains(testing_user)){
-                    resp.sendRedirect(req.getContextPath() + "/homepage.html");// добавить передачу логина и пароля пользователя
+                    resp.sendRedirect(req.getContextPath() + "/homepage.html");
                 }else{
-                    resp.sendRedirect(req.getContextPath() + "/login.html");
-                    // написать что юзера нет
+//                    resp.sendRedirect(req.getContextPath() + "/login.html");
+                    req.setAttribute("result", "user don't exist");
+                    RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/login.jsp");
+                    dispatcher.forward(req,resp);
                 }
             } catch (FileNotFoundException e) {
-                resp.sendRedirect(req.getContextPath() + "/login.html");
-               // написать что пользователя нет
+//                resp.sendRedirect(req.getContextPath() + "/login.html");
+                req.setAttribute("result", "user don't exist");
+                RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/login.jsp");
+                dispatcher.forward(req,resp);
             }
         }
     }
 
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+//        super.doGet(req, resp);
 
+        req.setAttribute("msg", " hello ");
 
+        req.getRequestDispatcher("login.jsp").forward(req, resp);
+    }
 }
