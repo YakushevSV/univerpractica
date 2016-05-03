@@ -7,7 +7,7 @@
 </head>
 <body>
 <%--<h1><%= request.getAttribute("result") %></h1>--%>
-<h1><%= request.getAttribute("result") ==  null? " ": (String)request.getAttribute("result") %></h1>
+<h1 id = "login_msg"><%= request.getAttribute("result") ==  null? " ": (String)request.getAttribute("result") %></h1>
     <form id = "login-form" action= "/login" method = "post">
 
         <p>

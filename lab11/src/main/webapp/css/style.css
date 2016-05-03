@@ -340,3 +340,8 @@ textarea {
     justify-content: center;
     overflow: auto;
 }
+#login_msg{
+    padding-top: 70px;
+    padding-left: 45%;
+    color: black;
+}
