@@ -1,6 +1,6 @@
 package chat;
 
-import chat.Hashcode;
+import chat.common.models.User;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

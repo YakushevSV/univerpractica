@@ -1,7 +1,7 @@
 package chat.filters;
 
 import chat.MainServlet;
-import chat.User;
+import chat.common.models.User;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
