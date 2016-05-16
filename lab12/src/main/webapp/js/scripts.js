@@ -52,7 +52,7 @@ function run(){
 
     loadMessages(function(){renderMessages(messagesList)});
     loadUsers();
-    Connect();
+    //Connect();
 }
 
 
@@ -85,7 +85,7 @@ function Connect() {
         isConnected = setTimeout(function () {
 
             ajax('GET', Application.mainUrl+ '?token=TN11EN', null, function(responseText){
-                var response = JSON.parse(responseText);
+                var response = JSON.parse(responseText.getResponseHeader("messages"));
                 var items = document.getElementsByClassName('messagesList')[0];
                 var count = items.childElementCount;
                 for(var i = 0 ; i< count; i++){
@@ -189,12 +189,16 @@ function elementMessageFromTemplateSys() {
 function loadMessages(render) {
     var url = Application.mainUrl + '?token=' + Application.token;
 
-    ajax('GET', url, null, function(responseText){
-        var response = JSON.parse(responseText);
+    ajax('GET', url, null, function(resp){//responseText){
+        //var response = JSON.parse(responseText);
+
+        //var testHeader = response.headers;
+
+        var response = JSON.parse(resp.getResponseHeader("messages"));
 
         Application.token = response.token;
         messagesList = response.messages;   
-        render();
+        render(messagesList);
         document.getElementById('textbox').scrollTop = 9999;
     });
 }
@@ -220,12 +224,16 @@ function ajax(method, url, data, continueWith, continueWithError) {
             return;
         }
 
-        if(isError(xhr.responseText)) {
-            continueWithError('Error on the server side, response ' + xhr.responseText);
-            return;
-        }
+        //if(isError(xhr.responseText)) {
+        //    continueWithError('Error on the server side, response ' + xhr.responseText);
+        //    return;
+        //}
 
-        continueWith(xhr.responseText);
+        //var testHead = xhr.getAllResponseHeaders();
+        //var test1head = xhr.getResponseHeader("test");
+
+        //continueWith(xhr.responseText);
+        continueWith(xhr);
     };    
 
     xhr.ontimeout = function () {
@@ -252,6 +260,9 @@ function ajax(method, url, data, continueWith, continueWithError) {
 
         continueWithError(errMsg);
     };
+
+    //xhr.setRequestHeader("test","hello");
+    //xhr.responseText = "texttest";
 
     xhr.send(data);
 }
@@ -474,7 +485,8 @@ function loadUsers() {
     var url = Application.mainUrl + '?users';
 
     ajax('GET', url, null, function(responseText){
-        var response = JSON.parse(responseText);    
+
+        var response = JSON.parse(responseText.getResponseHeader("users"));
         usersList = response.users;
     });
 }

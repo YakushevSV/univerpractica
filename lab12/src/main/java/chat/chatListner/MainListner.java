@@ -3,6 +3,15 @@ package chat.chatListner;
 
 
 import chat.Constants;
+import chat.InvalidTokenException;
+import chat.common.models.Message;
+import chat.common.models.User;
+import chat.storage.FileMessageStorage;
+import chat.storage.MessageStorage;
+import chat.storage.Portion;
+import chat.utils.MessageHelper;
+import chat.utils.StringUtils;
+import org.json.simple.parser.ParseException;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -12,10 +21,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @WebServlet(value = "/chat")
 public class MainListner extends HttpServlet{
+
+    private MessageStorage messageStorage = new FileMessageStorage();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -25,32 +37,50 @@ public class MainListner extends HttpServlet{
 //            return Response.badRequest("Absent query in request");
             RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/homepage.html");
             dispatcher.forward(req,resp);
+            return;
         }
         if (query.equals("users")) {
-//            List<User> users = messageStorage.getUsers();
-//            String responseBody = MessageHelper.buildServerResponseBodyUsers(users, messageStorage.userCounter());
+            List<User> users = messageStorage.getUsers();
+            String responseBody = MessageHelper.buildServerResponseBodyUsers(users, messageStorage.userCounter());
 //            return Response.ok(responseBody);
+            resp.addHeader("users", responseBody);
             RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/homepage.html");
             dispatcher.forward(req,resp);
+            return;
         }
         Map<String, String> map = queryToMap(query);
         String token = map.get(Constants.REQUEST_PARAM_TOKEN);
-//        if (StringUtils.isEmpty(token)) {
+        if (StringUtils.isEmpty(token)) {
 //            return Response.badRequest("Token query parameter is required");
-//        }
-//        try {
-//            int index = MessageHelper.parseToken(token);
-//            if (index > messageStorage.size()) {
+            RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/homepage.html");
+            dispatcher.forward(req,resp);
+            return;
+        }
+        try {
+            int index = MessageHelper.parseToken(token);
+            if (index > messageStorage.size()) {
+                RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/homepage.html");
+                dispatcher.forward(req,resp);
+                return;
 //                return Response.badRequest(
 //                        String.format("Incorrect token in request: %s. Server does not have so many messages", token));
-//            }
-//            Portion portion = new Portion(index);
-//            List<Message> messages = messageStorage.getPortion(portion);
-//            String responseBody = MessageHelper.buildServerResponseBody(messages, messageStorage.size());
+            }
+            Portion portion = new Portion(index);
+            List<Message> messages = messageStorage.getPortion(portion);
+            String responseBody = MessageHelper.buildServerResponseBody(messages, messageStorage.size());
+
+            resp.addHeader("messages", responseBody);
+
+            RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/homepage.html");
+            dispatcher.forward(req,resp);
+
+            return;
 //            return Response.ok(responseBody);
-//        } catch (InvalidTokenException e) {
+        } catch (InvalidTokenException e) {
 //            return Response.badRequest(e.getMessage());
-//        }
+            RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/homepage.html");
+            dispatcher.forward(req,resp);
+        }
     }
 
     private Map<String, String> queryToMap(String query) {
@@ -71,50 +101,67 @@ public class MainListner extends HttpServlet{
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 //        super.doPost(req, resp);
         String query = req.getQueryString();
-//        try {
+//        String str1test = req.getHeader("test");
+//        Map<String, String[]> maptest= req.getParameterMap();
+//        String strtest = req.getParameter("name");
+
+//        String sttest = MessageHelper.inputStreamToString(req.getInputStream());
+
+        try {
             if(query!= null&&query.contains("users")){
                 Map<String, String> map = queryToMap(query);
                 String token = map.get(Constants.REQUEST_PARAM_USER_RESPONCE);
                 if(token.equals("add")){
+
+                    User user = MessageHelper.getNewUser(req.getInputStream());
+
 //                    User user = MessageHelper.getNewUser(httpExchange.getRequestBody());
 //                    logger.info(String.format("new user : %s", user));
-//                    messageStorage.addUser(user);
+                    messageStorage.addUser(user);
+                    return;
 //                    return Response.ok();
                 }else if(token.equals("update")){
+                    User user = MessageHelper.getNewUser(req.getInputStream());
 //                    User user = MessageHelper.getNewUser(httpExchange.getRequestBody());
 //                    logger.info(String.format("user edit profile : %s", user));
-//                    messageStorage.updateUser(user);
+                    messageStorage.updateUser(user);
+                    return;
 //                    return Response.ok();
                 }
 
             }
+            Message message = MessageHelper.getClientMessage(req.getInputStream());
 //            Message message = MessageHelper.getClientMessage(httpExchange.getRequestBody());
 //            logger.info(String.format("Received new message from user: %s", message));
-//            messageStorage.addMessage(message);
+            messageStorage.addMessage(message);
+            return;
 //            return Response.ok();
-//        } catch (ParseException e) {
+        } catch (ParseException e) {
 //            logger.error("Could not parse message.", e);
 //            return new Response(Constants.RESPONSE_CODE_BAD_REQUEST, "Incorrect request body");
-//        } catch (IOException e) {
+        } catch (IOException e) {
 //            e.printStackTrace();
 //            return new Response(Constants.RESPONSE_CODE_BAD_REQUEST, "Incorrect request body");
-//        }
+        }
     }
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 //        super.doPut(req, resp);
 
-//        try {
+        try {
+            Message message = MessageHelper.getEditMessage(req.getInputStream());
 //            Message message = MessageHelper.getEditMessage(httpExchange.getRequestBody());
 //            //logger.info(String.format("message has been changed));
-//            if(messageStorage.updateMessage(message))
+            if(messageStorage.updateMessage(message)){
 //                return Response.ok();
+                return;
+            }
 //            return new Response(Constants.RESPONSE_CODE_BAD_REQUEST, "Incorrect request body");
-//        } catch (ParseException e) {
+        } catch (ParseException e) {
 //            logger.error("Could not parse message.", e);
 //            return new Response(Constants.RESPONSE_CODE_BAD_REQUEST, "Incorrect request body");
-//        }
+        }
 
     }
 
@@ -129,26 +176,29 @@ public class MainListner extends HttpServlet{
         }
         Map<String, String> map = queryToMap(query);
         String token = map.get(Constants.REQUEST_PARAM_MESSAGE_ID);
-//        if (StringUtils.isEmpty(token)) {
+        if (StringUtils.isEmpty(token)) {
+            return;
 //            return Response.badRequest("Token query parameter is required");
-//        }
-//        try {
+        }
+        try {
+            Message message = MessageHelper.getDelMessage(req.getInputStream());
 //            Message message = MessageHelper.getDelMessage(httpExchange.getRequestBody());
             String id = token;
 //            if(!messageStorage.removeMessage(id)){
-//            if(!messageStorage.replaceMessage(id, message)){
+            if(!messageStorage.replaceMessage(id, message)){
+                return;
 //                return Response.badRequest(
 //                        String.format("Incorrect token in request: %s. Server does not have message with such id", id));
-//            }
+            }
 //            String responseBody = MessageHelper.buildServerResponseBody(messages, messageStorage.size());
 //            return Response.ok();
             //return Response.gone();
-//        } catch (InvalidTokenException e) {
+        } catch (InvalidTokenException e) {
 //            return Response.badRequest(e.getMessage());
-//        }catch (ParseException e) {
+        }catch (ParseException e) {
 //            logger.error("Could not parse message.", e);
 //            return new Response(Constants.RESPONSE_CODE_BAD_REQUEST, "Incorrect request body");
-//        }
+        }
 
     }
 }
