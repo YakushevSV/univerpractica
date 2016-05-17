@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@WebServlet(value = "/chat")
+@WebServlet(urlPatterns = "/chat")//value = "/chat")
 public class MainListner extends HttpServlet{
 
     private MessageStorage messageStorage = new FileMessageStorage();
@@ -34,7 +34,6 @@ public class MainListner extends HttpServlet{
 //        super.doGet(req, resp);
         String query = req.getQueryString();
         if (query == null) {
-//            return Response.badRequest("Absent query in request");
             RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/homepage.html");
             dispatcher.forward(req,resp);
             return;
@@ -42,7 +41,6 @@ public class MainListner extends HttpServlet{
         if (query.equals("users")) {
             List<User> users = messageStorage.getUsers();
             String responseBody = MessageHelper.buildServerResponseBodyUsers(users, messageStorage.userCounter());
-//            return Response.ok(responseBody);
             resp.addHeader("users", responseBody);
             RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/homepage.html");
             dispatcher.forward(req,resp);
@@ -51,7 +49,6 @@ public class MainListner extends HttpServlet{
         Map<String, String> map = queryToMap(query);
         String token = map.get(Constants.REQUEST_PARAM_TOKEN);
         if (StringUtils.isEmpty(token)) {
-//            return Response.badRequest("Token query parameter is required");
             RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/homepage.html");
             dispatcher.forward(req,resp);
             return;
@@ -62,8 +59,6 @@ public class MainListner extends HttpServlet{
                 RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/homepage.html");
                 dispatcher.forward(req,resp);
                 return;
-//                return Response.badRequest(
-//                        String.format("Incorrect token in request: %s. Server does not have so many messages", token));
             }
             Portion portion = new Portion(index);
             List<Message> messages = messageStorage.getPortion(portion);
@@ -77,7 +72,6 @@ public class MainListner extends HttpServlet{
             return;
 //            return Response.ok(responseBody);
         } catch (InvalidTokenException e) {
-//            return Response.badRequest(e.getMessage());
             RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/homepage.html");
             dispatcher.forward(req,resp);
         }
@@ -101,11 +95,6 @@ public class MainListner extends HttpServlet{
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 //        super.doPost(req, resp);
         String query = req.getQueryString();
-//        String str1test = req.getHeader("test");
-//        Map<String, String[]> maptest= req.getParameterMap();
-//        String strtest = req.getParameter("name");
-
-//        String sttest = MessageHelper.inputStreamToString(req.getInputStream());
 
         try {
             if(query!= null&&query.contains("users")){
@@ -115,14 +104,12 @@ public class MainListner extends HttpServlet{
 
                     User user = MessageHelper.getNewUser(req.getInputStream());
 
-//                    User user = MessageHelper.getNewUser(httpExchange.getRequestBody());
-//                    logger.info(String.format("new user : %s", user));
+//
                     messageStorage.addUser(user);
+                    ((HttpServletResponse) resp).sendRedirect("/login.jsp");
                     return;
-//                    return Response.ok();
                 }else if(token.equals("update")){
                     User user = MessageHelper.getNewUser(req.getInputStream());
-//                    User user = MessageHelper.getNewUser(httpExchange.getRequestBody());
 //                    logger.info(String.format("user edit profile : %s", user));
                     messageStorage.updateUser(user);
                     return;
@@ -131,17 +118,14 @@ public class MainListner extends HttpServlet{
 
             }
             Message message = MessageHelper.getClientMessage(req.getInputStream());
-//            Message message = MessageHelper.getClientMessage(httpExchange.getRequestBody());
 //            logger.info(String.format("Received new message from user: %s", message));
             messageStorage.addMessage(message);
             return;
 //            return Response.ok();
         } catch (ParseException e) {
 //            logger.error("Could not parse message.", e);
-//            return new Response(Constants.RESPONSE_CODE_BAD_REQUEST, "Incorrect request body");
         } catch (IOException e) {
 //            e.printStackTrace();
-//            return new Response(Constants.RESPONSE_CODE_BAD_REQUEST, "Incorrect request body");
         }
     }
 
@@ -151,16 +135,12 @@ public class MainListner extends HttpServlet{
 
         try {
             Message message = MessageHelper.getEditMessage(req.getInputStream());
-//            Message message = MessageHelper.getEditMessage(httpExchange.getRequestBody());
-//            //logger.info(String.format("message has been changed));
+            //logger.info(String.format("message has been changed));
             if(messageStorage.updateMessage(message)){
-//                return Response.ok();
                 return;
             }
-//            return new Response(Constants.RESPONSE_CODE_BAD_REQUEST, "Incorrect request body");
         } catch (ParseException e) {
 //            logger.error("Could not parse message.", e);
-//            return new Response(Constants.RESPONSE_CODE_BAD_REQUEST, "Incorrect request body");
         }
 
     }
@@ -170,7 +150,6 @@ public class MainListner extends HttpServlet{
 //        super.doDelete(req, resp);
         String query = req.getQueryString();
         if (query == null) {
-//            return Response.badRequest("Absent query in request");
             RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/homepage.html");
             dispatcher.forward(req,resp);
         }
@@ -187,16 +166,9 @@ public class MainListner extends HttpServlet{
 //            if(!messageStorage.removeMessage(id)){
             if(!messageStorage.replaceMessage(id, message)){
                 return;
-//                return Response.badRequest(
-//                        String.format("Incorrect token in request: %s. Server does not have message with such id", id));
             }
-//            String responseBody = MessageHelper.buildServerResponseBody(messages, messageStorage.size());
-//            return Response.ok();
-            //return Response.gone();
         } catch (InvalidTokenException e) {
-//            return Response.badRequest(e.getMessage());
         }catch (ParseException e) {
-//            logger.error("Could not parse message.", e);
 //            return new Response(Constants.RESPONSE_CODE_BAD_REQUEST, "Incorrect request body");
         }
 

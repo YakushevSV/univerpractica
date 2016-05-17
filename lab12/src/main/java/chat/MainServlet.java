@@ -19,7 +19,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 @WebServlet(value = "/login", initParams = {
-        @WebInitParam(name = "cookie-live-time", value = "300")})
+        @WebInitParam(name = "cookie-live-time", value = "3000")})
 public class MainServlet extends HttpServlet{
     public static final String DEFAULT_USERS_STORAGE = "users.txt";
     public static final String COOKIE_USER_ID = "uid";

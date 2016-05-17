@@ -180,15 +180,6 @@ public class FileMessageStorage implements MessageStorage {
     }
 
     public synchronized List<User> getUsers() {
-        //int from = portion.getFromIndex();
-        //if (from < 0) {
-        //    throw new IllegalArgumentException(String.format("Portion from index %d can not be less then 0", from));
-        // }
-        //int to = portion.getToIndex();
-        //if (to != -1 && to < portion.getFromIndex()) {
-        //     throw new IllegalArgumentException(String.format("Porting last index %d can not be less then start index %d", to, from));
-        // }
-        //to = Math.max(to, messages.size());
         return users;
     }
     public int userCounter() {

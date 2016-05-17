@@ -7,7 +7,7 @@ var curAut;
 var f= false;
 
 var Application = {
-    mainUrl : 'http://localhost:8080/chat',    
+    mainUrl : 'http://localhost:8080/chat',
     token : 'TN11EN'
 };
 
@@ -52,7 +52,7 @@ function run(){
 
     loadMessages(function(){renderMessages(messagesList)});
     loadUsers();
-    //Connect();
+    Connect();
 }
 
 
@@ -309,6 +309,30 @@ function saveMessages(listToSave) {
     localStorage.setItem("Messages List", JSON.stringify(listToSave));
 }
 //--------------------------------------------------------------
+
+function set_cookie ( name, value, exp_y, exp_m, exp_d, path, domain, secure )
+{
+    var cookie_string = name + "=" + escape ( value );
+
+    if ( exp_y )
+    {
+        var expires = new Date ( exp_y, exp_m, exp_d );
+        cookie_string += "; expires=" + expires.toGMTString();
+    }
+
+    if ( path )
+        cookie_string += "; path=" + escape ( path );
+
+    if ( domain )
+        cookie_string += "; domain=" + escape ( domain );
+
+    if ( secure )
+        cookie_string += "; secure";
+
+    document.cookie = cookie_string;
+}
+
+
 function onRenameButtonClick(){
     var text = document.getElementById('userlgn');
     if(text.value == '')
@@ -340,6 +364,8 @@ function onRenameButtonClick(){
         saveMessages(messagesList);
 
         curAut.name = text.value;
+        delete_cookie("name");
+        set_cookie("name", curAut.name);
 
         var url = Application.mainUrl + '?users=update';
         ajax('POST', url, JSON.stringify(curAut), function(){});
@@ -374,43 +400,54 @@ function checkLog(btnLog){
     }
 
 }
+
+function delete_cookie ( cookie_name )
+{
+    var cookie_date = new Date ( );
+    cookie_date.setTime ( cookie_date.getTime() - 1 );
+    document.cookie = cookie_name += "=; expires=" + cookie_date.toGMTString();
+}
+
 function onLogButtonClick(element){
     var text = document.getElementById('userlgn');
     if(f){
-        if(text.value == '')
-            return;
+    //    if(text.value == '')
+    //        return;
+    //
+    //    var flag = false;
+    //    var ind = -1;
+    //    if(usersList != undefined){
+    //        for(var i = 0; i < usersList.length; i++ ){
+    //        if(usersList[i].name == text.value){
+    //            flag=true;
+    //            ind = i;
+    //             break;
+    //        }
+    //    }
+    //    }
+    //
+    //
+    //    if(flag){
+    //        usersList[ind].me= true;
+    //        curAut = newUser(text.value, true);;
+    //        curAut.id = usersList[ind].id;
+    //
+    //        var url = Application.mainUrl + '?users=add';
+    //        ajax('POST', url, JSON.stringify(curAut), function(){
+    //        });
+    //    }else{
+    //        var newUsr = newUser(text.value, true);
+    //        usersList.push(newUsr);
+    //        renderUsers([newUsr]);
+    //        curAut = newUsr;
+    //        var url = Application.mainUrl + '?users=add';
+    //        ajax('POST', url, JSON.stringify(newUsr), function(){});
+    //    }
+    //    text.value = '';
+    //    saveCur(curAut);
+        delete_cookie("uid");
+        curAut = null;
 
-        var flag = false;
-        var ind = -1;
-        if(usersList != undefined){
-            for(var i = 0; i < usersList.length; i++ ){
-            if(usersList[i].name == text.value){
-                flag=true;
-                ind = i;
-                 break;
-            }
-        }
-        }
-        
-
-        if(flag){
-            usersList[ind].me= true;
-            curAut = newUser(text.value, true);;
-            curAut.id = usersList[ind].id;
-
-            var url = Application.mainUrl + '?users=add';
-            ajax('POST', url, JSON.stringify(curAut), function(){
-            });
-        }else{
-            var newUsr = newUser(text.value, true);
-            usersList.push(newUsr);
-            renderUsers([newUsr]);
-            curAut = newUsr;
-            var url = Application.mainUrl + '?users=add';
-            ajax('POST', url, JSON.stringify(newUsr), function(){});
-        }
-        text.value = '';
-        saveCur(curAut);
     } else{
         var index = -1;
         if(usersList != undefined){
@@ -423,9 +460,11 @@ function onLogButtonClick(element){
         }
         
         var url = Application.mainUrl + '?users=add';
+        delete_cookie("uid");
         ajax('POST', url, JSON.stringify(curAut), function(){});
 
         curAut = null;
+
         usersList[index].me = false;
 
         saveCur(curAut);
