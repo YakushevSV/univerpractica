@@ -104,9 +104,21 @@ public class MainServlet extends HttpServlet{
                         resp.sendRedirect(req.getContextPath() + "/homepage.html");
                     }
                 } catch (FileNotFoundException e) {
+                    users.add(testing_user);
                     FileWriter fw = new FileWriter(DEFAULT_USERS_STORAGE);
-                    fw.write(gson.toJson(testing_user));
+                    fw.write(gson.toJson(users));
                     fw.close();
+
+                    Cookie userIdCookie = new Cookie(COOKIE_USER_ID, testing_user.getId());
+                    userIdCookie.setMaxAge(coockieLifeTime);
+                    resp.addCookie(userIdCookie);
+
+                    Cookie userNameCookie = new Cookie("name", testing_user.getName());
+                    userIdCookie.setMaxAge(coockieLifeTime);
+                    resp.addCookie(userNameCookie);
+
+                    resp.sendRedirect(req.getContextPath() + "/homepage.html");
+                    return;
                 }
             }else if(enter != null){
                 try {
